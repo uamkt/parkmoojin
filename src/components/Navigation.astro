@@ -1,0 +1,74 @@
+---
+// V2.3 — 3 Pillar 정보 아키텍처. 개별 제품은 Sub-page 안으로 흡수.
+const navItems = [
+  { href: "/", label: "Home" },
+  { href: "/avix", label: "조류와 항공의 공존" },
+  { href: "/cbrn-cads", label: "폐열로 지키는 전장" },
+  { href: "/tp-iq", label: "전쟁사가 설계한 AI" },
+  { href: "/publications", label: "Publications" },
+  { href: "/digital-ecosystem", label: "Digital" },
+  { href: "/articles", label: "Articles" },
+  { href: "/about", label: "About" },
+  { href: "/contact", label: "Contact" },
+];
+const currentPath = Astro.url.pathname;
+const isActive = (href: string) =>
+  href === "/" ? currentPath === "/" : currentPath === href || currentPath.startsWith(href + "/");
+---
+<nav class="border-b border-gray-200 bg-white sticky top-0 z-50">
+  <div class="max-w-6xl mx-auto px-4 py-3 md:py-4 flex items-center justify-between gap-4">
+    <a href="/" class="text-lg md:text-xl font-bold whitespace-nowrap" style="color: var(--color-navy);">
+      UAM KoreaTech
+    </a>
+
+    {/* Desktop nav */}
+    <ul class="hidden md:flex items-center gap-5 lg:gap-6 text-sm">
+      {navItems.map((item) => (
+        <li>
+          <a
+            href={item.href}
+            class:list={[
+              "hover:opacity-70 transition",
+              isActive(item.href) ? "font-semibold" : "",
+            ]}
+            style={isActive(item.href) ? "color: var(--color-gold);" : ""}
+          >
+            {item.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    {/* Mobile disclosure */}
+    <details class="md:hidden relative">
+      <summary class="list-none cursor-pointer p-2 -m-2" aria-label="메뉴 열기">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </summary>
+      <ul class="absolute right-0 top-full mt-2 min-w-[12rem] bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-50">
+        {navItems.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              class:list={[
+                "block px-4 py-2 text-sm hover:bg-gray-50",
+                isActive(item.href) ? "font-semibold" : "",
+              ]}
+              style={isActive(item.href) ? "color: var(--color-gold);" : ""}
+            >
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </details>
+  </div>
+</nav>
+<style>
+  /* Hide default disclosure marker across browsers */
+  details summary::-webkit-details-marker { display: none; }
+  details > summary { list-style: none; }
+</style>

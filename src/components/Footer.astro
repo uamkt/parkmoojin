@@ -1,0 +1,74 @@
+---
+import { ORGANIZATION, CONNECTED_SITES, BOOKS, APPS, IP_STATS } from "../lib/entities";
+const year = new Date().getFullYear();
+const totalBooks = BOOKS.length;
+const availableApps = APPS.filter((a) => a.status === "Available").length;
+---
+<footer class="border-t border-gray-200 bg-gray-50 mt-16">
+  <div class="max-w-6xl mx-auto px-4 py-12 grid md:grid-cols-4 gap-8">
+    <div class="md:col-span-1">
+      <div class="font-bold text-lg mb-2" style="color: var(--color-navy);">
+        {ORGANIZATION.name}
+      </div>
+      <div class="text-sm text-gray-600">{ORGANIZATION.legalName}</div>
+      <div class="text-xs text-gray-500 mt-2 leading-relaxed">
+        Dual-Use Aerospace Platform<br/>
+        Civil Aviation Safety + Defense
+      </div>
+      <div class="text-xs text-gray-500 mt-3">
+        Founded {ORGANIZATION.foundingDate}
+      </div>
+    </div>
+
+    <div>
+      <div class="font-semibold mb-2 text-sm" style="color: var(--color-navy);">Contact</div>
+      <ul class="text-sm text-gray-600 space-y-1">
+        <li>Email: <a href={`mailto:${ORGANIZATION.email}`} class="hover:underline">{ORGANIZATION.email}</a></li>
+        <li>Mobile: {ORGANIZATION.telephone}</li>
+        <li>Office: +82-2-795-2024</li>
+      </ul>
+      <div class="mt-4 flex gap-2 text-[11px]">
+        <a href="/contact?track=civil" class="px-2 py-1 rounded font-mono"
+           style="background-color: var(--color-teal-soft); color: var(--color-teal);">Civil →</a>
+        <a href="/contact?track=defense" class="px-2 py-1 rounded font-mono"
+           style="background-color: var(--color-gold-soft); color: var(--color-gold);">Defense →</a>
+      </div>
+    </div>
+
+    <div>
+      <div class="font-semibold mb-2 text-sm" style="color: var(--color-navy);">Portfolio</div>
+      <ul class="text-sm text-gray-600 space-y-1">
+        <li><a href="/#ip" class="hover:underline">IP {IP_STATS.total}건</a></li>
+        <li><a href="/#books" class="hover:underline">Amazon KDP {totalBooks}권 Live</a></li>
+        <li><a href="/#digital" class="hover:underline">App Store {availableApps} Available</a></li>
+        <li><a href="/articles" class="hover:underline">Articles · 6 카테고리</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <div class="font-semibold mb-2 text-sm" style="color: var(--color-navy);">Connected Sites</div>
+      <ul class="text-sm text-gray-600 space-y-2">
+        {CONNECTED_SITES.filter((s) => s.url !== "https://uamkt.com/").map((s) => (
+          <li>
+            <a href={s.url} rel="me noopener" target="_blank"
+               class="hover:underline flex items-baseline gap-1">
+              {s.highlight && <span style="color: var(--color-gold);">★</span>}
+              <span>{s.name}</span>
+            </a>
+            {s.highlight && (
+              <div class="text-[10px] font-mono uppercase tracking-wider"
+                   style="color: var(--color-gold);">Core SaaS</div>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+
+  <div class="border-t border-gray-200 py-4 text-center text-xs text-gray-500">
+    © {year} {ORGANIZATION.legalName}. All rights reserved. ·
+    <a href="/llms.txt" class="hover:underline">llms.txt</a> ·
+    <a href="/sitemap-index.xml" class="hover:underline">sitemap</a> ·
+    <a href="/rss.xml" class="hover:underline">RSS</a>
+  </div>
+</footer>

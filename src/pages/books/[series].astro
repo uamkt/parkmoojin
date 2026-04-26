@@ -1,0 +1,185 @@
+---
+import Base from "../../layouts/Base.astro";
+import EntityHead from "../../components/EntityHead.astro";
+import { ORGANIZATION, BOOKS } from "../../lib/entities";
+import {
+  buildOrganizationSchema,
+  buildBreadcrumbSchema,
+} from "../../lib/schema";
+
+/**
+ * V2.1 §J-3 — Series mini-landing pages
+ * 3 series + Standalone fold into Bird Strike Trilogy page (where Architecture of Command lives)
+ */
+export function getStaticPaths() {
+  return [
+    {
+      params: { series: "aseri" },
+      props: {
+        seriesKey: ["ASERI"],
+        name: "ASERI",
+        fullName: "Aerospace ESG Rating Initiative",
+        tagline: "항공우주 산업 ESG 평가 프레임워크 — 방법론 · 디지털 평가 포털 · 우주 자산 ESG 책임 경제학",
+        accent: "var(--color-teal)",
+        accentSoft: "var(--color-teal-soft)",
+        intro:
+          "ASERI 시리즈는 항공우주 산업에 특화된 ESG 평가 프레임워크 구축을 목표로 합니다. " +
+          "Vol.2는 평가 방법론, Vol.3은 디지털 평가 포털 설계, 별권 'The Tragedy of the Space Commons'는 " +
+          "우주 ESG 회계 경제학을 다룹니다.",
+      },
+    },
+    {
+      params: { series: "bird-strike-trilogy" },
+      props: {
+        seriesKey: ["Bird Strike Trilogy", "Standalone"],
+        name: "Bird Strike Trilogy",
+        fullName: "Bird Strike Trilogy + Standalone",
+        tagline: "조류충돌 위험 정량화 → Kill Chain → UAM 버티포트 Bird Strike Zero — 4권 시리즈",
+        accent: "var(--color-gold)",
+        accentSoft: "var(--color-gold-soft)",
+        intro:
+          "Bird Strike Trilogy는 국내외 공항 조류충돌 사회문제(국토부·공항공사 통계 617건/10년)에 대한 " +
+          "AI·교리·아키텍처 3단 솔루션을 다룹니다. Vol.1 AbriIndex Era(위험 정량화), Vol.2 Kill Chain " +
+          "for the Sky(통합 격멸체계), Vol.3 Vertiport Zero(UAM 설계). Standalone 'The Architecture " +
+          "of Command'는 동일 사고체계를 AI 시스템 설계 일반론으로 확장합니다.",
+      },
+    },
+    {
+      params: { series: "blis-d-engineering" },
+      props: {
+        seriesKey: ["BLIS-D Engineering"],
+        name: "BLIS-D Engineering",
+        fullName: "BLIS-D Engineering Series",
+        tagline: "항공 CBRN 제독 — 개념(Vol.1) · 위협 탐지·운용(Vol.2) · UAM 통합·차세대 안전(Vol.3)",
+        accent: "var(--color-navy)",
+        accentSoft: "#e8eef5",
+        intro:
+          "BLIS-D는 헬리콥터·드론에서 살수·살포 자산을 활용해 고온건식 화학·미생물 제독을 수행하는 " +
+          "본사 핵심 dual-use 플랫폼입니다. Vol.1은 개념 정의, Vol.2는 위협 탐지·운용 대응(Bird-Aircraft " +
+          "Strike 사례 포함), Vol.3은 UAM 생태계 통합 및 차세대 안전 아키텍처를 다룹니다.",
+      },
+    },
+  ];
+}
+
+const { seriesKey, name, fullName, tagline, accent, accentSoft, intro } = Astro.props;
+const slug = Astro.params.series;
+const canonical = `https://uamkt.com/books/${slug}`;
+
+const list = BOOKS.filter((b) => seriesKey.includes(b.series as any));
+
+const seriesSchema = {
+  "@context": "https://schema.org",
+  "@type": "BookSeries",
+  name: fullName,
+  url: canonical,
+  description: intro,
+  publisher: { "@id": `${ORGANIZATION.url}#organization` },
+  hasPart: list.map((b) => {
+    const primaryAsin = b.asinEbook ?? b.asinPaperback;
+    return primaryAsin ? { "@id": `https://www.amazon.com/dp/${primaryAsin}#book` } : { name: b.title };
+  }),
+};
+
+const schemas = [
+  buildOrganizationSchema(ORGANIZATION),
+  buildBreadcrumbSchema([
+    { name: "Home", url: "https://uamkt.com/" },
+    { name: "Books", url: "https://uamkt.com/books" },
+    { name, url: canonical },
+  ]),
+  seriesSchema,
+];
+
+const meta = {
+  title: `${fullName} | UAM KoreaTech Publications`,
+  description: tagline,
+  canonical,
+};
+---
+<Base {...meta}>
+  <EntityHead schemas={schemas} slot="head" />
+
+  <article class="max-w-5xl mx-auto px-4 py-8">
+    <nav class="text-sm text-gray-500 mb-4">
+      <a href="/" class="hover:underline">Home</a> /
+      <a href="/books" class="hover:underline">Books</a> /
+      <span class="font-mono">{name}</span>
+    </nav>
+
+    <header class="mb-10 rounded-lg p-6 md:p-8" style={`background-color: ${accentSoft}; border-left: 4px solid ${accent};`}>
+      <div class="text-xs uppercase tracking-wider mb-2 font-mono" style={`color: ${accent};`}>
+        Series · {list.length}권 · Amazon KDP Live
+      </div>
+      <h1 class="text-3xl md:text-4xl font-bold mb-3" style="color: var(--color-navy);">
+        {fullName}
+      </h1>
+      <p class="text-lg text-gray-800 mb-4 leading-relaxed">{tagline}</p>
+      <p class="text-sm text-gray-700 leading-relaxed">{intro}</p>
+    </header>
+
+    <section class="mb-10">
+      <h2 class="text-2xl font-bold mb-5" style="color: var(--color-navy);">Volumes ({list.length})</h2>
+      <div class="space-y-4">
+        {list.map((b, i) => (
+          <article class="border-2 border-gray-200 rounded-lg p-5 md:p-6 hover:border-gray-400 transition">
+            <div class="flex items-start gap-4 flex-wrap">
+              <div class="rounded-lg w-16 h-20 flex items-center justify-center font-bold text-xl flex-shrink-0"
+                   style={`background-color: ${accent}; color: white;`}>
+                {b.volume.replace(/^Vol\./, "") || (i + 1)}
+              </div>
+              <div class="flex-1 min-w-[260px]">
+                <div class="flex items-center gap-2 mb-1 flex-wrap">
+                  <span class="text-[10px] font-mono uppercase px-2 py-0.5 rounded font-bold"
+                        style="background-color: #0a7a35; color: white;">Live</span>
+                  <span class="text-[10px] text-gray-500 font-mono">{b.series} · {b.volume}</span>
+                </div>
+                <h3 class="text-lg font-bold mb-1 leading-snug" style="color: var(--color-navy);">{b.title}</h3>
+                {b.subtitle && <p class="text-sm text-gray-700 mb-2 leading-snug">{b.subtitle}</p>}
+                <p class="text-xs text-gray-500 font-mono mb-3">by {b.author} · published {b.publishedAt}</p>
+
+                <div class="flex flex-wrap gap-2 text-xs">
+                  {b.asinEbook && (
+                    <a href={`https://www.amazon.com/dp/${b.asinEbook}`} target="_blank" rel="noopener"
+                       data-track-event="book_amazon_click"
+                       data-track-label={`${name} ${b.volume} eBook`}
+                       class="px-3 py-1.5 rounded font-mono font-bold hover:opacity-90 transition"
+                       style={`background-color: ${accent}; color: white;`}>
+                      eBook ${b.priceEbook} →
+                    </a>
+                  )}
+                  {b.asinPaperback && (
+                    <a href={`https://www.amazon.com/dp/${b.asinPaperback}`} target="_blank" rel="noopener"
+                       data-track-event="book_amazon_click"
+                       data-track-label={`${name} ${b.volume} PB`}
+                       class="px-3 py-1.5 rounded font-mono font-bold border-2 hover:opacity-90 transition"
+                       style={`border-color: ${accent}; color: ${accent};`}>
+                      Paperback ${b.pricePaperback} →
+                    </a>
+                  )}
+                </div>
+                {b.note && <p class="text-[11px] text-gray-500 italic mt-3">※ {b.note}</p>}
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="mt-12 p-6 rounded-lg text-center" style={`background-color: ${accentSoft};`}>
+      <h2 class="text-xl font-bold mb-2" style="color: var(--color-navy);">관련 제품·문의</h2>
+      <p class="text-sm text-gray-700 mb-4">
+        본 시리즈에서 다루는 기술은 모두 UAM KoreaTech 제품 라인업에 직접 구현되어 있습니다.
+      </p>
+      <div class="flex flex-wrap gap-2 justify-center text-sm">
+        <a href="/products/avix-ai-civil" class="underline" style={`color: ${accent};`}>AVIX-AI Civil →</a>
+        <span class="text-gray-300">·</span>
+        <a href="/products/avix-ai" class="underline" style={`color: ${accent};`}>AVIX-AI V3 →</a>
+        <span class="text-gray-300">·</span>
+        <a href="/products/blis-d" class="underline" style={`color: ${accent};`}>BLIS-D →</a>
+        <span class="text-gray-300">·</span>
+        <a href="/products/cbrn-cads" class="underline" style={`color: ${accent};`}>CBRN-CADS →</a>
+      </div>
+    </section>
+  </article>
+</Base>

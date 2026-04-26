@@ -1,0 +1,141 @@
+---
+import Base from "../../layouts/Base.astro";
+import EntityHead from "../../components/EntityHead.astro";
+import { ORGANIZATION, BOOKS } from "../../lib/entities";
+import {
+  buildOrganizationSchema,
+  buildBreadcrumbSchema,
+} from "../../lib/schema";
+
+const canonical = "https://uamkt.com/books";
+
+const seriesIndex = [
+  {
+    slug: "aseri",
+    name: "ASERI",
+    title: "Aerospace ESG Rating Initiative",
+    summary: "항공우주 산업 ESG 평가 프레임워크 — Methodology · Portal · ESG Accountability Economics",
+    color: "var(--color-teal)",
+    bg: "var(--color-teal-soft)",
+  },
+  {
+    slug: "bird-strike-trilogy",
+    name: "Bird Strike Trilogy",
+    title: "Bird Strike Trilogy + Standalone",
+    summary: "조류충돌 위험 정량화부터 UAM 버티포트 Bird Strike Zero 설계까지 4권",
+    color: "var(--color-gold)",
+    bg: "var(--color-gold-soft)",
+  },
+  {
+    slug: "blis-d-engineering",
+    name: "BLIS-D Engineering",
+    title: "BLIS-D Engineering Series",
+    summary: "항공 CBRN 제독 — 개념(Vol.1) · Threat Detection(Vol.2) · UAM 통합(Vol.3)",
+    color: "var(--color-navy)",
+    bg: "#e8eef5",
+  },
+];
+
+const totalBooks = BOOKS.length;
+const totalAsins = BOOKS.reduce((n, b) => n + (b.asinEbook ? 1 : 0) + (b.asinPaperback ? 1 : 0), 0);
+
+const schemas = [
+  buildOrganizationSchema(ORGANIZATION),
+  buildBreadcrumbSchema([
+    { name: "Home", url: "https://uamkt.com/" },
+    { name: "Books", url: canonical },
+  ]),
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "UAM KoreaTech Publications",
+    url: canonical,
+    description: `Amazon KDP 출간 도서 ${totalBooks}권 (${totalAsins} ASIN Live) — ASERI · Bird Strike Trilogy · BLIS-D Engineering 3 시리즈`,
+    isPartOf: { "@id": "https://uamkt.com/#website" },
+  },
+];
+
+const meta = {
+  title: "Publications | UAM KoreaTech — Amazon KDP 10권 · 16 ASIN Live",
+  description: `Amazon Kindle Direct Publishing 출간 도서 ${totalBooks}권 검증판. ASERI 3 · Bird Strike Trilogy 3 · Standalone 1 · BLIS-D Engineering 3.`,
+  canonical,
+};
+---
+<Base {...meta}>
+  <EntityHead schemas={schemas} slot="head" />
+
+  <article class="max-w-5xl mx-auto px-4 py-8">
+    <nav class="text-sm text-gray-500 mb-4">
+      <a href="/" class="hover:underline">Home</a> / <span class="font-mono">Books</span>
+    </nav>
+
+    <header class="mb-10">
+      <div class="text-xs uppercase tracking-wider mb-2 font-mono" style="color: var(--color-gold);">
+        Amazon KDP — Verified 2026-04-26
+      </div>
+      <h1 class="text-4xl md:text-5xl font-bold mb-3" style="color: var(--color-navy);">
+        Publications
+      </h1>
+      <p class="text-lg text-gray-700 max-w-3xl leading-relaxed">
+        UAM KoreaTech은 항공우주 ESG, 조류충돌, CBRN 제독 3대 도메인에서 <strong>{totalBooks}권의 단행본</strong>을
+        Amazon Kindle Direct Publishing에 출간했습니다. 총 <strong>{totalAsins}개 ASIN</strong>이 Live 상태이며,
+        eBook과 Paperback 두 형식이 함께 제공됩니다.
+      </p>
+    </header>
+
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold mb-5" style="color: var(--color-navy);">3 Series</h2>
+      <div class="grid md:grid-cols-3 gap-4">
+        {seriesIndex.map((s) => {
+          const count = BOOKS.filter((b) =>
+            (s.slug === "bird-strike-trilogy" && (b.series === "Bird Strike Trilogy" || b.series === "Standalone")) ||
+            (s.slug === "aseri" && b.series === "ASERI") ||
+            (s.slug === "blis-d-engineering" && b.series === "BLIS-D Engineering")
+          ).length;
+          return (
+            <a href={`/books/${s.slug}`}
+               class="block border-2 rounded-lg p-5 hover:opacity-90 transition"
+               style={`border-color: ${s.color}; background-color: ${s.bg};`}>
+              <div class="text-[10px] font-mono uppercase tracking-wider mb-1 font-bold"
+                   style={`color: ${s.color};`}>
+                {s.name} · {count}권
+              </div>
+              <h3 class="font-bold text-lg mb-2" style="color: var(--color-navy);">{s.title}</h3>
+              <p class="text-sm text-gray-700 leading-relaxed">{s.summary}</p>
+              <div class="text-xs font-mono mt-3 underline" style={`color: ${s.color};`}>
+                View series →
+              </div>
+            </a>
+          );
+        })}
+      </div>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-2xl font-bold mb-5" style="color: var(--color-navy);">All Titles ({totalBooks})</h2>
+      <ul class="space-y-2">
+        {BOOKS.map((b) => {
+          const primaryAsin = b.asinEbook ?? b.asinPaperback;
+          return (
+            <li class="border border-gray-200 rounded p-3 text-sm flex items-start justify-between gap-3 flex-wrap">
+              <div class="flex-1 min-w-[260px]">
+                <div class="text-[10px] font-mono text-gray-500 mb-0.5">{b.series} · {b.volume} · by {b.author}</div>
+                <div class="font-medium" style="color: var(--color-navy);">{b.title}</div>
+                {b.subtitle && <div class="text-xs text-gray-600 mt-0.5">{b.subtitle}</div>}
+              </div>
+              {primaryAsin && (
+                <a href={`https://www.amazon.com/dp/${primaryAsin}`} target="_blank" rel="noopener"
+                   data-track-event="book_amazon_click"
+                   data-track-label={`books_index ${b.title}`}
+                   class="text-xs font-mono underline whitespace-nowrap"
+                   style="color: var(--color-gold);">
+                  amazon.com/dp/{primaryAsin} →
+                </a>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  </article>
+</Base>

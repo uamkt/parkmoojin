@@ -1,0 +1,13 @@
+---
+/**
+ * EntityHead.astro — JSON-LD 인젝터 (재사용)
+ * 본 정의서 §7.3 구현. <head>에 schema.org 블록을 직렬화 삽입.
+ */
+interface Props {
+  schemas: Record<string, unknown>[];
+}
+const { schemas } = Astro.props;
+---
+{schemas.map((schema) => (
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(schema, null, 2)} />
+))}

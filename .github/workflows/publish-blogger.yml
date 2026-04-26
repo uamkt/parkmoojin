@@ -1,0 +1,68 @@
+name: Publish to Blogger (tacticalprompt.blogspot.com)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '_content_pipeline/**/blogger.md'
+  workflow_dispatch:
+    inputs:
+      content_path:
+        description: 'Content file path (e.g., _content_pipeline/2026-04-26/blogger.md)'
+        required: true
+        type: string
+
+jobs:
+  publish-blogger:
+    name: Publish to Google Blogger
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          pip install google-api-python-client \
+                      google-auth-httplib2 \
+                      google-auth-oauthlib \
+                      python-frontmatter \
+                      markdown
+
+      - name: Restore service account JSON
+        env:
+          BLOGGER_SERVICE_ACCOUNT_JSON: ${{ secrets.BLOGGER_SERVICE_ACCOUNT_JSON }}
+        run: |
+          mkdir -p /tmp/credentials
+          echo "$BLOGGER_SERVICE_ACCOUNT_JSON" > /tmp/credentials/blogger_sa.json
+          chmod 600 /tmp/credentials/blogger_sa.json
+
+      - name: Detect changed Blogger content files
+        id: detect
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "files=${{ github.event.inputs.content_path }}" >> $GITHUB_OUTPUT
+          else
+            CHANGED=$(git diff --name-only HEAD^ HEAD | grep -E '_content_pipeline/.*/blogger\.md$' | tr '\n' ' ')
+            echo "files=$CHANGED" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Publish to Blogger
+        env:
+          BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID }}
+          BLOGGER_SA_PATH: /tmp/credentials/blogger_sa.json
+        run: |
+          for FILE in ${{ steps.detect.outputs.files }}; do
+            echo "📝 Publishing $FILE to Blogger..."
+            python scripts/publish_blogger.py "$FILE"
+          done
+
+      - name: Cleanup credentials
+        if: always()
+        run: rm -f /tmp/credentials/blogger_sa.json

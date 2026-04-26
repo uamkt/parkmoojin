@@ -1,0 +1,60 @@
+---
+import "../styles/global.css";
+import Navigation from "../components/Navigation.astro";
+import Footer from "../components/Footer.astro";
+import Analytics from "../components/Analytics.astro";
+
+interface Props {
+  title: string;
+  description: string;
+  canonical: string;
+  ogImage?: string;
+}
+const { title, description, canonical, ogImage = "/og-default.png" } = Astro.props;
+const ogImageAbsolute = ogImage.startsWith("http") ? ogImage : `https://uamkt.com${ogImage}`;
+---
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    {/* Open Graph */}
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageAbsolute} />
+    <meta property="og:locale" content="ko_KR" />
+    <meta property="og:site_name" content="UAM KoreaTech" />
+
+    {/* Twitter Card */}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageAbsolute} />
+
+    {/* AEO: 한국어 + 영어 hreflang 준비 (Phase 2 i18n에서 활성화) */}
+    <link rel="alternate" hreflang="ko" href={canonical} />
+    <link rel="alternate" hreflang="x-default" href={canonical} />
+
+    {/* RSS */}
+    <link rel="alternate" type="application/rss+xml" title="UAM KoreaTech — Articles" href="/rss.xml" />
+
+    <slot name="head" />
+    <Analytics />
+  </head>
+  <body>
+    <Navigation />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

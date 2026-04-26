@@ -1,0 +1,298 @@
+---
+import Master from "../layouts/Master.astro";
+import EntityHead from "../components/EntityHead.astro";
+import QuickAnswerBox from "../components/QuickAnswerBox.astro";
+import FAQSection from "../components/FAQSection.astro";
+import {
+  ORGANIZATION,
+  FOUNDER,
+  PRODUCTS,
+  PATENTS,
+  IP_STATS,
+  CONNECTED_SITES,
+  BOOKS,
+  APPS,
+  FAQS_ABOUT,
+} from "../lib/entities";
+import {
+  buildOrganizationSchema,
+  buildPersonSchema,
+  buildProductSchema,
+  buildFAQSchema,
+} from "../lib/schema";
+
+const schemas = [
+  buildOrganizationSchema(ORGANIZATION),
+  buildPersonSchema(FOUNDER),
+  ...PRODUCTS.map((p) => buildProductSchema(p as unknown as Record<string, unknown>)),
+  buildFAQSchema(FAQS_ABOUT),
+];
+
+const grantedPatents = PATENTS.filter((p) => p.status === "granted");
+const pendingPatents = PATENTS.filter((p) => p.status === "pending");
+const transferredPatents = PATENTS.filter((p) => p.status === "transferred-in");
+const trademarks = PATENTS.filter((p) => p.status === "trademark-pending");
+
+// V2.1 publishing/app stats
+const totalBooks = BOOKS.length;
+const totalAsins = BOOKS.reduce((n, b) => n + (b.asinEbook ? 1 : 0) + (b.asinPaperback ? 1 : 0), 0);
+const totalApps = APPS.length;
+const availableApps = APPS.filter((a) => a.status === "Available").length;
+
+const meta = {
+  title: "About UAM KoreaTech | Dual-Use Aerospace · Civil Aviation Safety + Defense",
+  description:
+    "유에이엠코리아텍은 민간 항공안전(BSM 2.0 + AVIX-AI)과 국방(BLIS-D · CBRN-CADS · TacticalPrompt)을 결합한 dual-use 항공우주 기술 기업입니다. 17 IP · 19/19 Lattice · KDP 10권 · App Store 8종.",
+  canonical: "https://uamkt.com/about",
+  ogImage: "https://uamkt.com/og-image.jpg",
+};
+---
+<Master {...meta}>
+  <EntityHead schemas={schemas} slot="head" />
+
+  {/* Section 1: Hero — V2.1 Dual-Use Aerospace */}
+  <section class="hero py-12 text-center border-b border-gray-200">
+    <div class="flex items-center justify-center gap-2 mb-3">
+      <span class="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded font-bold"
+            style="background-color: var(--color-teal-soft); color: var(--color-teal);">Civil Track</span>
+      <span class="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded font-bold"
+            style="background-color: var(--color-gold-soft); color: var(--color-gold);">Defense Track</span>
+    </div>
+    <h1 class="text-4xl md:text-5xl font-bold mb-4" style="color: var(--color-navy);">
+      UAM KoreaTech
+    </h1>
+    <p class="text-xl text-gray-700 mb-8 max-w-3xl mx-auto leading-relaxed">
+      민간 항공안전(BSM 2.0 + AVIX-AI)과 dual-use 국방(BLIS-D · CBRN-CADS · TacticalPrompt)을
+      결합한 한국형 항공우주 기술 기업
+    </p>
+    <div class="flex flex-wrap justify-center gap-3 text-sm">
+      <span class="px-4 py-2 rounded-full" style="background-color: var(--color-gold-soft); color: var(--color-navy);">
+        지식재산권 {IP_STATS.total}건
+      </span>
+      <span class="px-4 py-2 rounded-full" style="background-color: var(--color-teal-soft); color: var(--color-navy);">
+        조류충돌 617건/10년 사회문제 대응
+      </span>
+      <span class="px-4 py-2 rounded-full" style="background-color: var(--color-gold-soft); color: var(--color-navy);">
+        Anduril Lattice 19/19 실증
+      </span>
+      <span class="px-4 py-2 rounded-full" style="background-color: var(--color-teal-soft); color: var(--color-navy);">
+        Amazon KDP {totalBooks}권 · {totalAsins} ASIN Live
+      </span>
+      <span class="px-4 py-2 rounded-full" style="background-color: var(--color-gold-soft); color: var(--color-navy);">
+        App Store {totalApps}종 등록 ({availableApps} Available)
+      </span>
+    </div>
+  </section>
+
+  {/* Section 2: Quick Answer Box — V2.1 Civil + Defense framing */}
+  <QuickAnswerBox question="What is UAM KoreaTech?">
+    UAM KoreaTech (유에이엠코리아텍 주식회사) is a South Korean dual-use aerospace
+    technology company founded on May 27, 2024 by CEO Park Moojin. The company
+    operates two parallel tracks: <strong>Civil</strong> — closed-loop bird-strike
+    mitigation (BSM 2.0 + AVIX-AI Wildlife Intelligence Platform) addressing the
+    617 incidents/10yr social problem reported by MOLIT and Korea Airports
+    Corporation; and <strong>Defense</strong> — BLIS-D airborne CBRN decontamination,
+    CBRN-CADS (Korean equivalent of NATO JWARN), and TacticalPrompt SaaS.
+    The company holds {IP_STATS.total} IP assets ({IP_STATS.granted} granted +
+    {IP_STATS.pending} pending + {IP_STATS.transferredIn} transferred-in +
+    {IP_STATS.trademarkPending} trademark), demonstrated 19/19 HTTP 200 on
+    Anduril Lattice Entity API, and has published {totalBooks} books on Amazon
+    KDP ({totalAsins} ASINs Live) plus {totalApps} apps registered on Apple
+    App Store Connect.
+  </QuickAnswerBox>
+
+  {/* Section 3: Founder */}
+  <section class="founder py-8">
+    <h2 class="text-2xl font-bold mb-4">Founder</h2>
+    <div class="border border-gray-200 rounded-lg p-6">
+      <h3 class="text-xl font-semibold mb-1">{FOUNDER.name} ({FOUNDER.alternateName[0]})</h3>
+      <div class="text-sm text-gray-600 mb-3">{FOUNDER.jobTitle}</div>
+      <p class="mb-4">{FOUNDER.description}</p>
+      <div class="text-sm">
+        <strong>Education:</strong>
+        <ul class="list-disc list-inside mt-1 text-gray-700">
+          {FOUNDER.alumniOf.map((edu) => (
+            <li>{edu.name} — {edu.description}</li>
+          ))}
+        </ul>
+      </div>
+      <div class="text-sm mt-3">
+        <strong>Profile:</strong>
+        {FOUNDER.sameAs.map((url) => (
+          <a href={url} class="ml-2 underline hover:opacity-70" rel="me noopener" target="_blank">
+            {url.replace(/^https?:\/\//, "")}
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* Section 4: Products & Services */}
+  <section class="products py-8">
+    <h2 class="text-2xl font-bold mb-4">Products & Services</h2>
+    <div class="grid md:grid-cols-2 gap-4">
+      {PRODUCTS.map((p) => (
+        <a href={p.url} class="block border border-gray-200 rounded-lg p-5 hover:border-gold transition">
+          <div class="text-xs uppercase tracking-wider text-gray-500 mb-1">{p.applicationCategory}</div>
+          <h3 class="text-lg font-semibold mb-2">{p.name}</h3>
+          <p class="text-sm text-gray-700">{p.description}</p>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  {/* Section 5: Intellectual Property (17건 — status별 그룹) */}
+  <section class="ip py-8">
+    <h2 class="text-2xl font-bold mb-2">Intellectual Property</h2>
+    <p class="text-sm text-gray-600 mb-6">
+      총 {IP_STATS.total}건 — 등록 {IP_STATS.granted} · 출원 {IP_STATS.pending} · 기술이전 {IP_STATS.transferredIn} · 상표 {IP_STATS.trademarkPending}
+    </p>
+
+    <h3 class="text-lg font-semibold mb-3 mt-6">등록 특허 (Granted) — {grantedPatents.length}건</h3>
+    <ul class="space-y-2">
+      {grantedPatents.map((p) => (
+        <li class="border border-gray-200 rounded p-3 text-sm">
+          <div class="font-mono text-xs text-gray-500">{p.identifier} · {p.datePublished}</div>
+          <div class="font-medium">{p.name}</div>
+        </li>
+      ))}
+    </ul>
+
+    <h3 class="text-lg font-semibold mb-3 mt-6">출원 특허 (Pending) — {pendingPatents.length}건</h3>
+    <ul class="space-y-2">
+      {pendingPatents.map((p) => (
+        <li class="border border-gray-200 rounded p-3 text-sm">
+          <div class="font-mono text-xs text-gray-500">{p.identifier} · {p.jurisdiction} · {p.datePublished}</div>
+          <div class="font-medium">{p.name}</div>
+        </li>
+      ))}
+    </ul>
+
+    <h3 class="text-lg font-semibold mb-3 mt-6">기술이전 특허 (Transferred-in) — {transferredPatents.length}건</h3>
+    <ul class="space-y-2">
+      {transferredPatents.map((p) => (
+        <li class="border border-gray-200 rounded p-3 text-sm">
+          <div class="font-mono text-xs text-gray-500">
+            {p.identifier} · {p.datePublished} · from {(p as { transferredFrom?: string }).transferredFrom}
+          </div>
+          <div class="font-medium">{p.name}</div>
+        </li>
+      ))}
+    </ul>
+
+    {trademarks.length > 0 && (
+      <>
+        <h3 class="text-lg font-semibold mb-3 mt-6">출원 상표 (Trademark) — {trademarks.length}건</h3>
+        <ul class="space-y-2">
+          {trademarks.map((p) => (
+            <li class="border border-gray-200 rounded p-3 text-sm">
+              <div class="font-mono text-xs text-gray-500">{p.identifier} · {p.datePublished}</div>
+              <div class="font-medium">{p.name}</div>
+            </li>
+          ))}
+        </ul>
+      </>
+    )}
+  </section>
+
+  {/* Section 6: Publications & Apps — V2.1 KDP + App Store 검증판 */}
+  <section class="publications py-8 border-t border-gray-200">
+    <h2 class="text-2xl font-bold mb-4">Publications & Applications</h2>
+    <div class="grid md:grid-cols-2 gap-4 mb-2">
+      <div class="border-2 rounded-lg p-5" style="border-color: var(--color-gold);">
+        <div class="text-xs uppercase tracking-wider font-mono mb-1" style="color: var(--color-gold);">Amazon KDP</div>
+        <div class="text-3xl font-bold" style="color: var(--color-navy);">{totalBooks}<span class="text-base font-normal text-gray-500"> 권 Live</span></div>
+        <p class="text-sm text-gray-700 mt-2 leading-relaxed">
+          ASERI 3 · Bird Strike Trilogy 3 · Standalone 1 · BLIS-D Engineering 3 — 모두 Kindle Direct Publishing 출간 완료.
+          <strong>{totalAsins} ASIN</strong> Amazon 직링크 즉시 적용.
+        </p>
+        <a href="/#books" class="inline-block text-xs font-mono mt-3 underline" style="color: var(--color-gold);">View all books →</a>
+      </div>
+      <div class="border-2 rounded-lg p-5" style="border-color: var(--color-teal);">
+        <div class="text-xs uppercase tracking-wider font-mono mb-1" style="color: var(--color-teal);">Apple App Store Connect</div>
+        <div class="text-3xl font-bold" style="color: var(--color-navy);">{totalApps}<span class="text-base font-normal text-gray-500"> 종 등록</span></div>
+        <p class="text-sm text-gray-700 mt-2 leading-relaxed">
+          UAM Korea Tech Co., Ltd. 계정 — Available <strong>{availableApps}</strong>종(CBRN Tactical · AVIX-AI · BLIS-D · CBRN-CADS · K-UAM),
+          심사·제출 준비 3종.
+        </p>
+        <a href="/#digital" class="inline-block text-xs font-mono mt-3 underline" style="color: var(--color-teal);">View app catalog →</a>
+      </div>
+    </div>
+    <p class="text-[11px] text-gray-500 leading-relaxed">
+      ※ 검증 일자: 2026-04-26 (KDP Bookshelf + App Store Connect). 자세한 ASIN·앱 카탈로그는 홈페이지 #books · #digital 섹션 참조.
+    </p>
+  </section>
+
+  {/* Section 7: Achievements & Milestones — V2.1 보강 */}
+  <section class="milestones py-8">
+    <h2 class="text-2xl font-bold mb-4">Achievements & Milestones</h2>
+    <ul class="space-y-3 border-l-2 pl-6" style="border-color: var(--color-gold);">
+      <li>
+        <div class="text-xs text-gray-500">2024-05-27</div>
+        <div class="font-medium">유에이엠코리아텍 주식회사 설립</div>
+      </li>
+      <li>
+        <div class="text-xs text-gray-500">2025-05~06</div>
+        <div class="font-medium">자체 등록 특허 4건 확보 (UAM·소방·드론·풍력 분야)</div>
+      </li>
+      <li>
+        <div class="text-xs text-gray-500">2026-03</div>
+        <div class="font-medium">CBRN-CADS·BLIS-D 핵심 IP 출원 (KR + US PCT)</div>
+      </li>
+      <li>
+        <div class="text-xs text-gray-500">2026-04-08 ~ 2026-04-19</div>
+        <div class="font-medium">Amazon KDP 도서 10권 출간 — ASERI / Bird Strike Trilogy / BLIS-D Engineering 3 시리즈</div>
+      </li>
+      <li>
+        <div class="text-xs text-gray-500">2026-04-17</div>
+        <div class="font-medium">Anduril Developer Zone V5.1 번들 발송 (Sent ID: FMfcgzQgLPSDPNVTfVzPMpntljFwkBrV)</div>
+      </li>
+      <li>
+        <div class="text-xs text-gray-500">2026-04-20</div>
+        <div class="font-medium">Anduril Lattice 19/19 HTTP 200 실증 — 인천테크노파크 공고 제2026-177호 (commit fbcb327)</div>
+      </li>
+      <li>
+        <div class="text-xs text-gray-500">2026-04-24</div>
+        <div class="font-medium">Lattice Dashboard에 platform_type=Animal 공식 카탈로그 편입 — AVIX-AI V5.1 우선 채택</div>
+      </li>
+      <li>
+        <div class="text-xs text-gray-500">2026-04-26</div>
+        <div class="font-medium">www.uamkt.com V2.1 Dual-Use 리뉴얼 (Civil + Defense 듀얼 트랙)</div>
+      </li>
+    </ul>
+  </section>
+
+  {/* Section 8: Connected Sites — V2.0 통합 */}
+  <section class="spokes py-8">
+    <h2 class="text-2xl font-bold mb-4">Connected Sites</h2>
+    <div class="grid md:grid-cols-3 gap-3">
+      {CONNECTED_SITES.map((s) => (
+        <a href={s.url} rel="me noopener" target="_blank"
+           class={`border-2 rounded-lg p-4 hover:opacity-90 transition block ${s.highlight ? '' : 'border-gray-200'}`}
+           style={s.highlight ? "border-color: var(--color-gold); background-color: var(--color-gold-soft);" : ""}>
+          <div class="text-[10px] uppercase font-mono tracking-wider mb-1"
+               style={s.highlight ? "color: var(--color-gold);" : "color: #6b7280;"}>
+            {s.type}{s.highlight ? " · ★ Core" : ""}
+          </div>
+          <div class="font-bold mb-1" style="color: var(--color-navy);">{s.name}</div>
+          <div class="font-mono text-[11px] text-gray-500">{s.url.replace(/^https?:\/\//, '').replace(/\/$/, '')}</div>
+          {s.note && <p class="text-xs text-gray-600 mt-2 leading-snug">{s.note}</p>}
+        </a>
+      ))}
+    </div>
+  </section>
+
+  {/* Section 8: FAQ */}
+  <FAQSection items={FAQS_ABOUT} />
+
+  {/* Section 9: Contact */}
+  <section class="contact py-8 border-t border-gray-200">
+    <h2 class="text-2xl font-bold mb-4">Contact</h2>
+    <ul class="text-base space-y-2">
+      <li>Email: <a href={`mailto:${ORGANIZATION.email}`} class="underline">{ORGANIZATION.email}</a></li>
+      <li>Mobile: {ORGANIZATION.telephone}</li>
+      <li>Office: +82-2-795-2024</li>
+      <li>Address: {ORGANIZATION.address.addressLocality}, {ORGANIZATION.address.addressCountry}</li>
+    </ul>
+  </section>
+</Master>

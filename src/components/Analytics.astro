@@ -1,0 +1,62 @@
+---
+/**
+ * V2.0 §F-1 / V2.1 — GA4 Dual-Track Event Wiring
+ *
+ * Loads Google Analytics 4 only when PUBLIC_GA4_ID is set (Netlify env var).
+ * This keeps local dev + previews silent and ensures we never accidentally
+ * report internal traffic to production analytics.
+ *
+ * Event taxonomy (matches V2.0 §F-1 + V2.1 KDP·App Store extensions)
+ *   cta_civil_click       — Civil Track CTA clicks (mailto + page CTA)
+ *   cta_defense_click     — Defense Track CTA clicks
+ *   book_amazon_click     — Amazon KDP 도서 클릭 (V2.1)
+ *   site_external_click   — Connected Sites / partner external links
+ *   nav_section_click     — In-page anchor nav (#tracks, #bsm, #books, ...)
+ *
+ * Events are wired via DOM delegation on [data-track-event].
+ * Add `data-track-event="<event_name>"` and optional `data-track-label`
+ * to any element to fire automatically.
+ */
+const GA4_ID = import.meta.env.PUBLIC_GA4_ID;
+---
+{GA4_ID && (
+  <>
+    <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${GA4_ID}`}></script>
+    <script is:inline define:vars={{ GA4_ID }}>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){ window.dataLayer.push(arguments); }
+      window.gtag = gtag;
+      gtag('js', new Date());
+      gtag('config', GA4_ID, {
+        anonymize_ip: true,
+        cookie_flags: 'SameSite=None;Secure',
+      });
+    </script>
+  </>
+)}
+
+<script is:inline>
+  // V2.1 Dual-Track event delegation (works regardless of GA4 presence)
+  // - If GA4 is loaded: fires gtag(event)
+  // - If not: still tagged for future analytics swap-in
+  (function () {
+    function fire(name, params) {
+      try {
+        if (typeof window.gtag === 'function') {
+          window.gtag('event', name, params || {});
+        }
+        // Also dispatch a CustomEvent for any other listeners (e.g. PostHog)
+        window.dispatchEvent(new CustomEvent('uamkt:track', { detail: { name, params } }));
+      } catch (_) { /* noop */ }
+    }
+
+    document.addEventListener('click', function (e) {
+      var el = e.target && e.target.closest('[data-track-event]');
+      if (!el) return;
+      var name = el.getAttribute('data-track-event');
+      var label = el.getAttribute('data-track-label') || el.textContent.trim().slice(0, 60);
+      var href = el.getAttribute('href') || '';
+      fire(name, { label: label, href: href });
+    });
+  })();
+</script>

@@ -1,0 +1,109 @@
+name: Scheduled Auto-Publish (Weekly Calendar)
+
+# 주 7편 자동 발행 — KST 09:00 = UTC 00:00
+# 월: Hub | 화·목·일: Blogger | 수·토: WordPress | 금: Hub Strategic
+on:
+  schedule:
+    - cron: '0 0 * * 1'   # 월 09:00 KST — Hub Pillar Deep-dive
+    - cron: '0 0 * * 2'   # 화 09:00 KST — Blogger Pillar 변형
+    - cron: '0 0 * * 3'   # 수 09:00 KST — WordPress Pillar 변형
+    - cron: '0 0 * * 4'   # 목 09:00 KST — Blogger TPE 시리즈
+    - cron: '0 0 * * 5'   # 금 09:00 KST — Hub Strategic Update
+    - cron: '0 0 * * 6'   # 토 09:00 KST — WordPress CBRN 분석
+    - cron: '0 0 * * 0'   # 일 09:00 KST — Blogger Weekly Digest
+
+  workflow_dispatch:
+    inputs:
+      week_folder:
+        description: 'Week pipeline folder (e.g., 2026-W17)'
+        required: true
+        type: string
+      channel:
+        description: 'Channel: hub | blogger | wordpress | all'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - hub
+          - blogger
+          - wordpress
+          - all
+
+jobs:
+  detect-and-route:
+    name: Detect today's content and route
+    runs-on: ubuntu-latest
+    outputs:
+      channel: ${{ steps.routing.outputs.channel }}
+      content_path: ${{ steps.routing.outputs.content_path }}
+      should_publish: ${{ steps.routing.outputs.should_publish }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Determine today's channel from cron schedule
+        id: routing
+        run: |
+          DOW=$(date -u +%u)  # 1=Monday, 7=Sunday
+          WEEK=$(date -u +%Y-W%V)
+
+          case "$DOW" in
+            1) CHANNEL="hub";        SLOT="pillar-deepdive" ;;
+            2) CHANNEL="blogger";    SLOT="pillar-variant" ;;
+            3) CHANNEL="wordpress";  SLOT="pillar-stanag" ;;
+            4) CHANNEL="blogger";    SLOT="tpe-series" ;;
+            5) CHANNEL="hub";        SLOT="strategic-update" ;;
+            6) CHANNEL="wordpress";  SLOT="cbrn-analysis" ;;
+            7) CHANNEL="blogger";    SLOT="weekly-digest" ;;
+          esac
+
+          # Manual dispatch override
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            WEEK="${{ github.event.inputs.week_folder }}"
+            if [ "${{ github.event.inputs.channel }}" != "all" ]; then
+              CHANNEL="${{ github.event.inputs.channel }}"
+            fi
+          fi
+
+          PATH_BASE="_content_pipeline/${WEEK}"
+          CONTENT_PATH="${PATH_BASE}/${SLOT}_${CHANNEL}.md"
+
+          # Check if content file exists
+          if [ -f "$CONTENT_PATH" ]; then
+            echo "should_publish=true" >> $GITHUB_OUTPUT
+            echo "✅ Content found: $CONTENT_PATH"
+          else
+            echo "should_publish=false" >> $GITHUB_OUTPUT
+            echo "⚠️ Content not found: $CONTENT_PATH — skipping"
+          fi
+
+          echo "channel=$CHANNEL" >> $GITHUB_OUTPUT
+          echo "content_path=$CONTENT_PATH" >> $GITHUB_OUTPUT
+
+  trigger-channel-publish:
+    name: Trigger ${{ needs.detect-and-route.outputs.channel }} publish
+    needs: detect-and-route
+    if: needs.detect-and-route.outputs.should_publish == 'true'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Trigger channel-specific workflow
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CHANNEL: ${{ needs.detect-and-route.outputs.channel }}
+          CONTENT_PATH: ${{ needs.detect-and-route.outputs.content_path }}
+        run: |
+          case "$CHANNEL" in
+            hub)
+              echo "📤 Hub auto-publishes via push trigger (no separate dispatch needed)"
+              ;;
+            blogger)
+              gh workflow run publish-blogger.yml \
+                -f content_path="$CONTENT_PATH"
+              ;;
+            wordpress)
+              gh workflow run publish-wordpress.yml \
+                -f content_path="$CONTENT_PATH"
+              ;;
+          esac

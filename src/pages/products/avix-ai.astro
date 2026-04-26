@@ -1,0 +1,171 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import EntityHead from "../../components/EntityHead.astro";
+import QuickAnswerBox from "../../components/QuickAnswerBox.astro";
+import FAQSection from "../../components/FAQSection.astro";
+import ArticleCard from "../../components/ArticleCard.astro";
+import { ORGANIZATION, PRODUCTS, PATENTS } from "../../lib/entities";
+import {
+  buildOrganizationSchema,
+  buildProductSchema,
+  buildBreadcrumbSchema,
+  buildFAQSchema,
+} from "../../lib/schema";
+
+const product = PRODUCTS.find((p) => p.name === "AVIX-AI V3")!;
+const canonical = "https://uamkt.com/products/avix-ai";
+
+const relatedPatents = PATENTS.filter((p) =>
+  ["KR 10-2828256", "KR 10-2828254", "KR 10-2025-0019244", "CN 2025112645458"].includes(p.identifier)
+);
+
+const relatedArticles = (await getCollection("articles"))
+  .filter((a) => a.data.category === "case-studies" || a.data.category === "market-trends")
+  .sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf())
+  .slice(0, 4);
+
+const faqs = [
+  {
+    question: "AVIX-AI는 어떤 환경에서 검증되었나요?",
+    answer:
+      "2026-04-20 인천테크노파크 공고 제2026-177호 실증에서 Anduril Lattice SDK 대상 19/19 HTTP 200 게시에 성공했습니다. 이 중 8건이 AVIX-AI 조류 탐지 동적 엔티티(TEMPLATE_TRACK / disposition NEUTRAL / platform_type Animal)입니다.",
+  },
+  {
+    question: "Animal/Bird 엔티티가 공식 지원되나요?",
+    answer:
+      "네. 2026-04-24 부로 Anduril Lattice Dashboard에 platform_type=Animal + aliases.name=Bird 가 공식 카탈로그로 추가되었습니다. AVIX-AI V5.1은 이를 우선 채택하여 altitudeHaeMeters 필드와 함께 게시합니다.",
+  },
+  {
+    question: "버티포트 운영자에게 어떤 가치를 주나요?",
+    answer:
+      "조류 충돌은 도심 항공모빌리티(UAM) 운항의 가장 큰 회피 가능 위험 중 하나입니다. AVIX-AI는 CCTV·레이더 데이터를 실시간 분석하여 충돌 위험을 사전에 알리고, 특허 KR 10-2828256 기반 에어분사 드론과 연계해 능동 회피까지 자동화합니다.",
+  },
+];
+
+const schemas = [
+  buildOrganizationSchema(ORGANIZATION),
+  buildProductSchema(product),
+  buildBreadcrumbSchema([
+    { name: "Home", url: "https://uamkt.com/" },
+    { name: "Products", url: "https://uamkt.com/products/avix-ai" },
+    { name: "AVIX-AI", url: canonical },
+  ]),
+  buildFAQSchema(faqs),
+];
+
+const meta = {
+  title: "AVIX-AI — Anduril Lattice 통합 조류충돌 탐지 AI | UAM KoreaTech",
+  description:
+    "AVIX-AI(Avian Intersection AI)는 Anduril Lattice SDK 19/19 HTTP 200 실증을 통과한 조류충돌 탐지 AI입니다. UAM 운항·공항·군 비행장의 사전 회피 의사결정을 자동화합니다.",
+  canonical,
+  ogImage: "/og-images/case-studies-lattice-2026.png",
+};
+---
+<Base {...meta}>
+  <EntityHead schemas={schemas} slot="head" />
+
+  <article class="max-w-5xl mx-auto px-4 py-8">
+    <nav class="text-sm text-gray-500 mb-4">
+      <a href="/" class="hover:underline">Home</a> / <span>Products</span> / <span class="font-mono">AVIX-AI</span>
+    </nav>
+
+    <header class="mb-10">
+      <div class="text-xs uppercase tracking-wider mb-2 font-mono" style="color: var(--color-gold);">
+        Bird Strike Detection · Software v5.1
+      </div>
+      <h1 class="text-4xl md:text-5xl font-bold mb-3" style="color: var(--color-navy);">
+        AVIX-AI
+      </h1>
+      <p class="text-lg text-gray-700 max-w-3xl">
+        Avian Intersection AI. Anduril Lattice 통합 조류충돌 탐지 시스템.
+        19/19 HTTP 200 실증 완료(2026-04-20, 인천테크노파크 공고 제2026-177호).
+      </p>
+    </header>
+
+    <QuickAnswerBox question="AVIX-AI는 무엇인가요?">
+      AVIX-AI는 CCTV·레이더 센서로부터 조류 활동을 실시간 탐지하고, NATO 군용 데이터 플랫폼인 Anduril Lattice에 직접 게시하는 한국 최초의 검증된 AI 시스템입니다. 도심 항공모빌리티(UAM) 운영자, 군 비행장, 민간 공항이 동일한 인프라를 공유하며 충돌 위험을 사전 회피할 수 있습니다. 2026-04-24 Lattice Dashboard에 공식 추가된 platform_type=Animal 카탈로그를 V5.1에서 우선 채택했습니다.
+    </QuickAnswerBox>
+
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold mb-4">핵심 능력</h2>
+      <div class="grid md:grid-cols-2 gap-4">
+        <div class="border border-gray-200 rounded-lg p-5">
+          <div class="text-xs uppercase tracking-wider font-mono mb-1" style="color: var(--color-gold);">CAPABILITY 01</div>
+          <h3 class="font-bold mb-2">Lattice 직결 게시</h3>
+          <p class="text-sm text-gray-700">TEMPLATE_TRACK 엔티티로 Lattice Entity API에 즉시 게시. 19/19 HTTP 200 정량 검증.</p>
+        </div>
+        <div class="border border-gray-200 rounded-lg p-5">
+          <div class="text-xs uppercase tracking-wider font-mono mb-1" style="color: var(--color-gold);">CAPABILITY 02</div>
+          <h3 class="font-bold mb-2">Animal/Bird 카탈로그 호환</h3>
+          <p class="text-sm text-gray-700">2026-04-24 Lattice 신설 platform_type=Animal · aliases.name=Bird 첫 채택. altitudeHaeMeters 필드로 고공 좌표 정확화.</p>
+        </div>
+        <div class="border border-gray-200 rounded-lg p-5">
+          <div class="text-xs uppercase tracking-wider font-mono mb-1" style="color: var(--color-gold);">CAPABILITY 03</div>
+          <h3 class="font-bold mb-2">CBRN-CADS 교차 통합</h3>
+          <p class="text-sm text-gray-700">동일 Lattice 인스턴스에서 AVIX-AI 트랙과 CBRN-CADS 위험구역을 단일 작전 화면에 통합.</p>
+        </div>
+        <div class="border border-gray-200 rounded-lg p-5">
+          <div class="text-xs uppercase tracking-wider font-mono mb-1" style="color: var(--color-gold);">CAPABILITY 04</div>
+          <h3 class="font-bold mb-2">능동 회피 트리거</h3>
+          <p class="text-sm text-gray-700">특허 KR 10-2828256(에어분사 드론)·KR 10-2828254(정전기 풍선 안내) 연동으로 회피 의사결정까지 자동화.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold mb-4">기술 사양</h2>
+      <table class="w-full border-collapse text-sm">
+        <tbody>
+          <tr class="border-b border-gray-200"><td class="py-2 px-3 font-mono text-gray-500 w-1/3">Application Category</td><td class="py-2 px-3">{product.applicationCategory}</td></tr>
+          <tr class="border-b border-gray-200"><td class="py-2 px-3 font-mono text-gray-500">Operating System</td><td class="py-2 px-3">{product.operatingSystem}</td></tr>
+          <tr class="border-b border-gray-200"><td class="py-2 px-3 font-mono text-gray-500">Software Version</td><td class="py-2 px-3">{product.softwareVersion} (V2 Animal 패치)</td></tr>
+          <tr class="border-b border-gray-200"><td class="py-2 px-3 font-mono text-gray-500">Lattice Sandbox</td><td class="py-2 px-3">30dhgc · 토큰 만료 2026-06-03</td></tr>
+          <tr class="border-b border-gray-200"><td class="py-2 px-3 font-mono text-gray-500">Validation</td><td class="py-2 px-3">19/19 HTTP 200 PUT · 6/6 GET 검증 (commit fbcb327)</td></tr>
+          <tr><td class="py-2 px-3 font-mono text-gray-500">Disposition</td><td class="py-2 px-3">NEUTRAL (Animal·비군사 객체)</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold mb-4">관련 IP</h2>
+      <div class="grid gap-3">
+        {relatedPatents.map((p) => (
+          <div class="border-l-4 pl-4 py-2" style="border-color: var(--color-gold);">
+            <div class="text-xs font-mono text-gray-500 mb-1">{p.identifier} · {p.jurisdiction} · {p.status}</div>
+            <div class="font-medium">{p.name}</div>
+          </div>
+        ))}
+      </div>
+      <p class="mt-3 text-sm text-gray-500"><a href="/ip/patents" class="underline">전체 17건 IP 포트폴리오 →</a></p>
+    </section>
+
+    {relatedArticles.length > 0 && (
+      <section class="mb-12">
+        <h2 class="text-2xl font-bold mb-4">관련 글</h2>
+        <div class="grid md:grid-cols-2 gap-4">
+          {relatedArticles.map((a) => (
+            <ArticleCard
+              slug={a.id}
+              title={a.data.title}
+              description={a.data.description}
+              category={a.data.category}
+              publishedAt={a.data.publishedAt}
+              quickAnswer={a.data.quickAnswer}
+            />
+          ))}
+        </div>
+      </section>
+    )}
+
+    <FAQSection items={faqs} />
+
+    <section class="mt-12 p-8 rounded-lg text-center" style="background-color: var(--color-navy); color: white;">
+      <h2 class="text-2xl font-bold mb-3">AVIX-AI 통합 문의</h2>
+      <p class="text-sm opacity-80 mb-5">버티포트 운영자·민항·군 비행장 모두 적용 가능.</p>
+      <a href="/contact" class="inline-block px-6 py-3 rounded font-semibold" style="background-color: var(--color-gold); color: var(--color-navy);">
+        문의하기
+      </a>
+    </section>
+  </article>
+</Base>

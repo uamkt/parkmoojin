@@ -1,0 +1,17 @@
+---
+import Base from "./Base.astro";
+
+interface Props {
+  title: string;
+  description: string;
+  canonical: string;
+  ogImage?: string;
+}
+const props = Astro.props;
+---
+<Base {...props}>
+  <slot name="head" slot="head" />
+  <article class="max-w-5xl mx-auto px-4 py-8">
+    <slot />
+  </article>
+</Base>

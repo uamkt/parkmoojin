@@ -1,0 +1,19 @@
+---
+/**
+ * QuickAnswerBox.astro — AEO 핵심 답변 박스
+ * 본 정의서 §8.3 구현. AI 인용 최우선 위치에 배치.
+ */
+interface Props {
+  question: string;
+}
+const { question } = Astro.props;
+---
+<aside class="quick-answer-box border-l-4 p-6 my-8 rounded-r">
+  <div class="text-xs uppercase tracking-wider mb-2 font-bold" style="color: var(--color-navy);">
+    Quick Answer
+  </div>
+  <h3 class="text-lg font-semibold mb-3">{question}</h3>
+  <div class="text-base leading-relaxed">
+    <slot />
+  </div>
+</aside>

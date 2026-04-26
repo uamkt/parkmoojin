@@ -1,0 +1,469 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../layouts/Base.astro";
+import EntityHead from "../components/EntityHead.astro";
+import {
+  ORGANIZATION,
+  FAQS_ABOUT,
+  BOOKS,
+  CONNECTED_SITES,
+  APPS,
+  NARRATIVE_CHAPTERS,
+  PILLARS,
+  PARTNERS_V23,
+  SECTION_SLOGANS,
+  IP_STATS,
+} from "../lib/entities";
+import {
+  buildOrganizationSchema,
+  buildFAQSchema,
+} from "../lib/schema";
+
+const allArticles = (await getCollection("articles"))
+  .sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf());
+
+// V2.3 §E-2 — 5 categories priority order (사용자 수정: 5줄 리스트 진열)
+const recentArticles = ["market-trends", "policy", "case-studies", "papers", "cbrn-ai", "business-models"]
+  .map((cat) => allArticles.find((a) => a.data.category === cat))
+  .filter(Boolean)
+  .slice(0, 5) as typeof allArticles;
+
+// 카테고리 한글 라벨 (Recent Articles 진열용)
+const categoryLabel: Record<string, string> = {
+  "market-trends": "시장 트렌드",
+  "policy": "정책 분석",
+  "case-studies": "실증 사례",
+  "papers": "Mini-Paper",
+  "cbrn-ai": "CBRN AI",
+  "business-models": "사업모델",
+};
+
+// V2.3 §E-3 — Featured 6 books on main; full list on /publications
+const FEATURED_BOOK_ASINS = new Set([
+  "B0FQ1X1TD3", // BLIS-D Vol.1
+  "B0FL29FQQM", // The AbriIndex Era
+  "B0GGYF77B9", // Kill Chain for the Sky
+  "B0F2ZKFQRN", // Vertiport Zero
+  "B0GJTJKBGX", // Aerospace Industry ESG (ASERI Vol.2)
+  "B0GWT9SZ4C", // The Architecture of Command
+]);
+const featuredBooks = BOOKS.filter((b) => b.asinEbook && FEATURED_BOOK_ASINS.has(b.asinEbook as string));
+
+// V2.3 §D-3 — Apps 메인 진열 4종 (CBRN Tactical · AVIX-AI · BLIS-D · CBRN-CADS)
+const PRIMARY_APP_NAMES = new Set(["CBRN Tactical", "AVIX-AI", "BLIS-D", "CBRN-CADS"]);
+const featuredApps = APPS.filter((a) => PRIMARY_APP_NAMES.has(a.name));
+
+// V2.3 §D-3 — Web 2 (uamkt.com 자체 제외)
+const featuredSites = CONNECTED_SITES.filter((s) => s.url !== "https://uamkt.com/");
+
+// Schema.org Book entries (full 10 — for SEO; visible cards limited per V2.3 §E-3)
+const bookSchemas = BOOKS.map((b) => {
+  const offers: any[] = [];
+  if (b.asinEbook) {
+    offers.push({
+      "@type": "Offer",
+      url: `https://www.amazon.com/dp/${b.asinEbook}`,
+      price: b.priceEbook,
+      priceCurrency: "USD",
+      availability: "https://schema.org/InStock",
+      category: "Kindle eBook",
+    });
+  }
+  if (b.asinPaperback) {
+    offers.push({
+      "@type": "Offer",
+      url: `https://www.amazon.com/dp/${b.asinPaperback}`,
+      price: b.pricePaperback,
+      priceCurrency: "USD",
+      availability: "https://schema.org/InStock",
+      category: "Paperback",
+    });
+  }
+  const primaryAsin = b.asinEbook ?? b.asinPaperback;
+  return {
+    "@context": "https://schema.org",
+    "@type": "Book",
+    "@id": primaryAsin ? `https://www.amazon.com/dp/${primaryAsin}#book` : undefined,
+    name: b.title,
+    alternateName: b.subtitle ?? undefined,
+    bookFormat: b.asinEbook ? "https://schema.org/EBook" : "https://schema.org/Paperback",
+    bookEdition: b.volume,
+    inLanguage: b.languages,
+    author: { "@type": "Person", name: b.author },
+    publisher: { "@id": `${ORGANIZATION.url}#organization` },
+    isPartOf: b.series !== "Standalone" ? { "@type": "BookSeries", name: b.series } : undefined,
+    datePublished: b.publishedAt,
+    url: primaryAsin ? `https://www.amazon.com/dp/${primaryAsin}` : undefined,
+    offers: offers.length ? offers : undefined,
+  };
+});
+
+const schemas = [
+  buildOrganizationSchema(ORGANIZATION),
+  buildFAQSchema(FAQS_ABOUT),
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": "https://uamkt.com/#website",
+    url: "https://uamkt.com/",
+    name: "UAM KoreaTech",
+    description: ORGANIZATION.description,
+    publisher: { "@id": "https://uamkt.com/#organization" },
+    potentialAction: {
+      "@type": "SearchAction",
+      target: { "@type": "EntryPoint", urlTemplate: "https://uamkt.com/search?q={search_term_string}" },
+      "query-input": "required name=search_term_string",
+    },
+  },
+  ...bookSchemas,
+];
+
+const meta = {
+  title: "조류충돌 솔루션 운영기업 | UAM KoreaTech",
+  description:
+    "Anduril Lattice가 인정한 공백 발견자. UAM 버티포트 \"버드스트라이크\" 녹색기술 적용. 블리드에어 기반 사업모델로 조류 서식지 제거 + CBRN-CADS 동시 구축. 스위스 BOXO3 LOI · 19/19 Lattice 실증 · TP-IQ 전쟁사가 설계한 AI.",
+  canonical: "https://uamkt.com/",
+};
+
+const trackBg = {
+  Civil: "var(--color-teal-soft)",
+  Defense: "var(--color-gold-soft)",
+  Dual: "#e8eef5",
+  ESG: "#e0f5e8",
+};
+const trackColor = {
+  Civil: "var(--color-teal)",
+  Defense: "var(--color-gold)",
+  Dual: "var(--color-navy)",
+  ESG: "#0a7a35",
+};
+---
+<Base {...meta}>
+  <EntityHead schemas={schemas} slot="head" />
+
+  {/* ─── Section 1 · #hero — "한국 최초, 조류충돌 솔루션 운영기업" ─── */}
+  {/* 사용자 수정: Chapter 1 / Hero 데코·sub-headline 제거. 워딩만 유지. */}
+  <section id="hero" class="border-b border-gray-200">
+    <div class="max-w-6xl mx-auto px-4 py-16 md:py-24">
+      <h1 class="text-4xl md:text-6xl font-bold mb-8 leading-tight" style="color: var(--color-navy);">
+        {NARRATIVE_CHAPTERS[0].headline}
+      </h1>
+      <ul class="space-y-3 text-lg md:text-xl text-gray-700 mb-10 max-w-3xl">
+        {NARRATIVE_CHAPTERS[0].bullets.map((b) => (
+          <li class="flex gap-2"><span style="color: var(--color-gold);">▸</span><span>{b}</span></li>
+        ))}
+      </ul>
+
+      {/* Dual CTA — V2.3 §D-5: 아이콘 + 트랙 라벨만 (워딩 삭제) */}
+      <div class="flex flex-wrap gap-3" aria-label="Dual track contact">
+        <a href="/contact?track=civil"
+           data-track-event="cta_civil_click" data-track-label="hero_civil"
+           class="inline-flex items-center gap-2 px-6 py-3 rounded font-semibold transition hover:opacity-90"
+           style="background-color: var(--color-teal); color: var(--color-navy);"
+           aria-label="Civil 트랙 문의">
+          <span aria-hidden="true">🛬</span> Civil 트랙 문의 →
+        </a>
+        <a href="/contact?track=defense"
+           data-track-event="cta_defense_click" data-track-label="hero_defense"
+           class="inline-flex items-center gap-2 px-6 py-3 rounded font-semibold transition hover:opacity-90"
+           style="background-color: var(--color-gold); color: var(--color-navy);"
+           aria-label="Defense 트랙 문의">
+          <span aria-hidden="true">🛡️</span> Defense 트랙 문의 →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  {/* ─── Section 2~5 · Story Cards 4 ───────────────────── */}
+  {NARRATIVE_CHAPTERS.slice(1).map((ch, i) => {
+    const altBg = i % 2 === 0 ? "#f8fafc" : "white";
+    const accent = i === 0 ? "var(--color-teal)" : i === 1 ? "var(--color-gold)" : i === 2 ? "var(--color-navy)" : "var(--color-gold)";
+    return (
+      <section id={ch.id} style={`background-color: ${altBg};`}>
+        <div class="max-w-6xl mx-auto px-4 py-14 md:py-16">
+          <div class="grid md:grid-cols-3 gap-8">
+            <div class="md:col-span-1">
+              <div class="text-xs uppercase tracking-[0.2em] mb-3 font-mono" style={`color: ${accent};`}>
+                Chapter {ch.chapter}
+              </div>
+              <h2 class="text-3xl md:text-4xl font-bold leading-tight" style="color: var(--color-navy);">
+                {ch.headline}
+              </h2>
+              <p class="text-sm text-gray-600 font-mono mt-3" style={`color: ${accent};`}>
+                {ch.subheadline}
+              </p>
+            </div>
+            <div class="md:col-span-2">
+              <ul class="space-y-3 text-base text-gray-800">
+                {ch.bullets.map((b) => (
+                  <li class="flex gap-3 leading-relaxed">
+                    <span style={`color: ${accent};`}>▸</span>
+                    <span set:html={b}></span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  })}
+
+  {/* ─── Section 6 · #pillars — 3 Pillar Cards ────────── */}
+  <section id="pillars" style="background-color: var(--color-gold-soft);">
+    <div class="max-w-6xl mx-auto px-4 py-14">
+      <div class="text-center mb-10">
+        <div class="text-xs uppercase tracking-[0.2em] font-mono mb-2" style="color: var(--color-gold);">Product Portfolio</div>
+        <h2 class="text-3xl md:text-4xl font-bold" style="color: var(--color-navy);">3 Pillars</h2>
+      </div>
+      <div class="grid md:grid-cols-3 gap-5">
+        {PILLARS.map((p, i) => (
+          <a href={p.href}
+             data-track-event="nav_section_click" data-track-label={`pillar_${p.id}`}
+             class="block bg-white border-2 rounded-xl p-6 hover:shadow-lg transition"
+             style={`border-color: ${p.accent};`}>
+            <div class="text-[10px] font-mono uppercase tracking-wider mb-2 font-bold"
+                 style={`color: ${p.accent};`}>
+              Pillar {i + 1} · {p.track} Track
+            </div>
+            <h3 class="text-2xl font-bold mb-2 leading-snug" style="color: var(--color-navy);">
+              {p.slogan}
+            </h3>
+            <p class="text-sm font-mono mb-3" style={`color: ${p.accent};`}>{p.headline}</p>
+            <p class="text-sm text-gray-700 leading-relaxed mb-4">{p.summary}</p>
+            <div class="text-xs font-mono underline" style={`color: ${p.accent};`}>
+              Sub-page 진입 →
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* ─── Section 7 · #partners — "글로벌 2사가 선택했다" ── */}
+  <section id="partners" class="max-w-6xl mx-auto px-4 py-14">
+    <div class="text-center mb-8">
+      <div class="text-xs uppercase tracking-[0.2em] font-mono mb-2" style="color: var(--color-gold);">{SECTION_SLOGANS.partners.caption}</div>
+      <h2 class="text-3xl md:text-4xl font-bold" style="color: var(--color-navy);">{SECTION_SLOGANS.partners.title}</h2>
+    </div>
+    <div class="grid md:grid-cols-2 gap-4">
+      {PARTNERS_V23.map((p) => (
+        <article class="border-2 rounded-lg p-6" style={`border-color: ${p.accent};`}>
+          <div class="flex items-start justify-between gap-3 mb-3 flex-wrap">
+            <div>
+              <div class="text-[10px] uppercase tracking-wider font-mono" style={`color: ${p.accent};`}>
+                {p.country}
+              </div>
+              <h3 class="text-xl font-bold" style="color: var(--color-navy);">{p.name}</h3>
+            </div>
+            <span class="text-[10px] font-mono uppercase px-2 py-1 rounded font-bold whitespace-nowrap"
+                  style={`background-color: ${p.accent}; color: white;`}>
+              {p.relation}
+            </span>
+          </div>
+          <p class="text-sm font-mono text-gray-600 mb-2">{p.badge}</p>
+          <p class="text-sm text-gray-700 leading-relaxed">{p.note}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  {/* ─── Section 8 · #digital — "Digital Portfolio · 유에이엠코리아텍 고유 IP" ── */}
+  {/* 사용자 수정: 회사 지식재산권 통합 진열. IP를 최상단으로 올림. */}
+  <section id="digital" style="background-color: #f8fafc;">
+    <div class="max-w-6xl mx-auto px-4 py-14">
+      <div class="text-center mb-8">
+        <div class="text-xs uppercase tracking-[0.2em] font-mono mb-2" style="color: var(--color-gold);">{SECTION_SLOGANS.digital.caption}</div>
+        <h2 class="text-3xl md:text-4xl font-bold" style="color: var(--color-navy);">{SECTION_SLOGANS.digital.title}</h2>
+      </div>
+
+      {/* Intellectual Property — V2.3 사용자 수정: Digital Portfolio 최상단 */}
+      <div class="mb-10">
+        <h3 class="text-sm font-bold uppercase tracking-wider mb-3 font-mono" style="color: var(--color-gold);">
+          Intellectual Property ({IP_STATS.total}건)
+        </h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
+          <a href="/ip/patents" class="block bg-white border-2 rounded-lg p-5 text-center hover:opacity-90 transition" style="border-color: var(--color-gold);">
+            <div class="text-3xl md:text-4xl font-bold" style="color: var(--color-gold);">{IP_STATS.granted}</div>
+            <div class="text-xs font-mono uppercase tracking-wider mt-1 text-gray-600">자체 등록 특허</div>
+          </a>
+          <a href="/ip/patents" class="block bg-white border-2 rounded-lg p-5 text-center hover:opacity-90 transition" style="border-color: var(--color-teal);">
+            <div class="text-3xl md:text-4xl font-bold" style="color: var(--color-teal);">{IP_STATS.pending}</div>
+            <div class="text-xs font-mono uppercase tracking-wider mt-1 text-gray-600">자체 출원 특허</div>
+          </a>
+          <a href="/ip/patents" class="block bg-white border-2 rounded-lg p-5 text-center hover:opacity-90 transition border-gray-300">
+            <div class="text-3xl md:text-4xl font-bold" style="color: var(--color-navy);">{IP_STATS.transferredIn}</div>
+            <div class="text-xs font-mono uppercase tracking-wider mt-1 text-gray-600">기술이전 특허</div>
+          </a>
+          <a href="/ip/patents" class="block bg-white border-2 rounded-lg p-5 text-center hover:opacity-90 transition border-gray-300">
+            <div class="text-3xl md:text-4xl font-bold" style="color: var(--color-navy);">{IP_STATS.trademarkPending}</div>
+            <div class="text-xs font-mono uppercase tracking-wider mt-1 text-gray-600">출원 상표</div>
+          </a>
+        </div>
+        <p class="text-xs text-gray-600 leading-relaxed">
+          KIPRIS · USPTO · CNIPA 검증 가능 · 박무진 대표 단독 1저자 9건 포함 · SK텔레콤 · 삼성전자 · 포스코 기술이전 3건.
+          <a href="/ip/patents" class="underline font-mono ml-1" style="color: var(--color-gold);">전체 17건 IP 포트폴리오 →</a>
+        </p>
+      </div>
+
+      {/* Web Sites — 2 */}
+      <div class="mb-8">
+        <h3 class="text-sm font-bold uppercase tracking-wider mb-3 font-mono" style="color: var(--color-gold);">
+          Connected Sites ({featuredSites.length})
+        </h3>
+        <div class="grid md:grid-cols-2 gap-3">
+          {featuredSites.map((s) => (
+            <a href={s.url} target="_blank" rel="noopener"
+               data-track-event="site_external_click" data-track-label={s.name}
+               class={`block bg-white border-2 rounded-lg p-5 hover:opacity-90 transition ${s.highlight ? '' : 'border-gray-200'}`}
+               style={s.highlight ? "border-color: var(--color-gold); background-color: var(--color-gold-soft);" : ""}>
+              <div class="text-[10px] uppercase font-mono tracking-wider mb-1"
+                   style={s.highlight ? "color: var(--color-gold);" : "color: #6b7280;"}>
+                {s.type}{s.highlight ? " · ★ Core" : ""}
+              </div>
+              <div class="font-bold mb-1" style="color: var(--color-navy);">{s.name}</div>
+              <div class="font-mono text-[11px] text-gray-500">{s.url.replace(/^https?:\/\//, '').replace(/\/$/, '')}</div>
+              {s.note && <p class="text-xs text-gray-600 mt-2 leading-snug">{s.note}</p>}
+            </a>
+          ))}
+        </div>
+      </div>
+
+      {/* Apps — 4 */}
+      <div class="mb-8">
+        <h3 class="text-sm font-bold uppercase tracking-wider mb-3 font-mono" style="color: var(--color-gold);">
+          iOS Applications ({featuredApps.length})
+        </h3>
+        <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-3">
+          {featuredApps.map((a) => (
+            <article class="bg-white border border-gray-200 rounded-lg p-4">
+              <div class="flex items-center gap-2 mb-2 flex-wrap">
+                <span class="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded font-bold"
+                      style="background-color: var(--color-gold); color: var(--color-navy);">
+                  {a.status}
+                </span>
+                <span class="text-[10px] font-mono uppercase px-2 py-0.5 rounded"
+                      style={`background-color: ${trackBg[a.track]}; color: ${trackColor[a.track]};`}>
+                  {a.track}
+                </span>
+              </div>
+              <h4 class="font-bold mb-1 leading-snug" style="color: var(--color-navy);">{a.name}</h4>
+              <p class="text-xs text-gray-700 leading-relaxed">{a.role}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+
+      {/* Books — Featured 6 */}
+      <div class="mb-6">
+        <h3 class="text-sm font-bold uppercase tracking-wider mb-3 font-mono" style="color: var(--color-gold);">
+          Amazon KDP — Featured ({featuredBooks.length} of {BOOKS.length})
+        </h3>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+          {featuredBooks.map((b) => (
+            <article class="bg-white border border-gray-200 rounded-lg p-4 flex flex-col">
+              <div class="flex items-center gap-2 mb-2 flex-wrap">
+                <span class="text-[10px] font-mono uppercase px-2 py-0.5 rounded font-bold"
+                      style="background-color: #0a7a35; color: white;">Live</span>
+                <span class="text-[10px] text-gray-500 font-mono">{b.series} · {b.volume}</span>
+              </div>
+              <h4 class="font-bold mb-1 leading-snug text-sm" style="color: var(--color-navy);">{b.title}</h4>
+              {b.subtitle && <p class="text-[11px] text-gray-600 mb-2 leading-snug">{b.subtitle}</p>}
+              <div class="mt-auto flex flex-wrap gap-2 text-[11px]">
+                {b.asinEbook && (
+                  <a href={`https://www.amazon.com/dp/${b.asinEbook}`} target="_blank" rel="noopener"
+                     data-track-event="book_amazon_click"
+                     data-track-label={`featured ${b.title}`}
+                     class="underline font-mono"
+                     style="color: var(--color-gold);">
+                    eBook ${b.priceEbook} →
+                  </a>
+                )}
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+
+      <div class="text-center mt-6 flex flex-wrap gap-3 justify-center">
+        <a href="/digital-ecosystem" class="text-sm font-mono underline" style="color: var(--color-gold);">전체 디지털 자산 보기 →</a>
+        <span class="text-gray-300">·</span>
+        <a href="/publications" class="text-sm font-mono underline" style="color: var(--color-gold);">전체 도서 {BOOKS.length}권 보기 →</a>
+      </div>
+    </div>
+  </section>
+
+  {/* ─── Section 9 · #articles — Editorial List 5줄 (사용자 수정안) ── */}
+  <section id="articles" class="max-w-6xl mx-auto px-4 py-14">
+    <div class="text-center mb-10">
+      <div class="text-xs uppercase tracking-[0.2em] font-mono mb-2" style="color: var(--color-gold);">{SECTION_SLOGANS.articles.caption}</div>
+      <h2 class="text-3xl md:text-4xl font-bold" style="color: var(--color-navy);">{SECTION_SLOGANS.articles.title}</h2>
+    </div>
+
+    <ol class="border-t border-gray-200">
+      {recentArticles.map((a, i) => {
+        const dateStr = a.data.publishedAt.toISOString().slice(0, 10).replace(/-/g, ". ");
+        const label = categoryLabel[a.data.category] ?? a.data.category;
+        return (
+          <li class="border-b border-gray-200">
+            <a href={`/articles/${a.id}`}
+               class="grid grid-cols-12 gap-3 md:gap-6 items-center px-2 md:px-4 py-5 md:py-6 hover:bg-gray-50 transition group">
+              {/* Index — italic serif gold */}
+              <div class="col-span-2 md:col-span-1 italic font-serif text-2xl md:text-3xl tracking-tight"
+                   style="color: var(--color-gold);">
+                {String(i + 1).padStart(2, "0")}
+              </div>
+              {/* Category — uppercase gold */}
+              <div class="col-span-10 md:col-span-3 text-[11px] md:text-xs font-mono uppercase tracking-[0.15em]"
+                   style="color: var(--color-gold);">
+                {label}
+              </div>
+              {/* Title — bold navy */}
+              <div class="col-span-12 md:col-span-6 text-base md:text-lg font-semibold leading-snug group-hover:underline"
+                   style="color: var(--color-navy);">
+                {a.data.title}
+              </div>
+              {/* Date — gray right */}
+              <div class="col-span-12 md:col-span-2 text-xs font-mono text-gray-400 md:text-right">
+                {dateStr}
+              </div>
+            </a>
+          </li>
+        );
+      })}
+    </ol>
+
+    <div class="text-center mt-8">
+      <a href="/articles"
+         data-track-event="nav_section_click" data-track-label="articles_more"
+         class="text-sm font-mono underline" style="color: var(--color-gold);">
+        전체 게시판 보기 →
+      </a>
+    </div>
+  </section>
+
+  {/* ─── Section 10 · #contact — "대표가 직접 응답합니다" ── */}
+  <section id="contact" class="max-w-6xl mx-auto px-4 pb-16">
+    <div class="rounded-2xl p-8 md:p-14 text-center" style="background: linear-gradient(135deg, var(--color-navy) 0%, #1a2c4a 100%); color: white;">
+      <div class="text-xs uppercase tracking-[0.3em] mb-3 font-mono" style="color: var(--color-teal);">{SECTION_SLOGANS.contact.caption}</div>
+      <h2 class="text-3xl md:text-4xl font-bold mb-6">{SECTION_SLOGANS.contact.title}</h2>
+      {/* V2.3 §D-5: Body 워딩 전체 삭제. CTA 아이콘 + 트랙 라벨만 유지. */}
+      <div class="flex flex-wrap gap-3 justify-center mt-2" aria-label="Dual track contact">
+        <a href="/contact?track=civil"
+           data-track-event="cta_civil_click" data-track-label="footer_civil"
+           class="inline-flex items-center gap-2 px-6 py-3 rounded font-semibold transition hover:opacity-90"
+           style="background-color: var(--color-teal); color: var(--color-navy);"
+           aria-label="Civil 트랙 문의">
+          <span aria-hidden="true">🛬</span> Civil 트랙 문의 →
+        </a>
+        <a href="/contact?track=defense"
+           data-track-event="cta_defense_click" data-track-label="footer_defense"
+           class="inline-flex items-center gap-2 px-6 py-3 rounded font-semibold transition hover:opacity-90"
+           style="background-color: var(--color-gold); color: var(--color-navy);"
+           aria-label="Defense 트랙 문의">
+          <span aria-hidden="true">🛡️</span> Defense 트랙 문의 →
+        </a>
+      </div>
+    </div>
+  </section>
+</Base>

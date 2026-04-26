@@ -1,0 +1,161 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import EntityHead from "../../components/EntityHead.astro";
+import QuickAnswerBox from "../../components/QuickAnswerBox.astro";
+import FAQSection from "../../components/FAQSection.astro";
+import ArticleCard from "../../components/ArticleCard.astro";
+import { ORGANIZATION, PRODUCTS } from "../../lib/entities";
+import {
+  buildOrganizationSchema,
+  buildProductSchema,
+  buildBreadcrumbSchema,
+  buildFAQSchema,
+} from "../../lib/schema";
+
+const product = PRODUCTS.find((p) => p.name === "TacticalPrompt (TPE)")!;
+const canonical = "https://uamkt.com/services/tactical-prompt";
+
+const relatedArticles = (await getCollection("articles"))
+  .filter((a) => ["business-models", "cbrn-ai", "papers"].includes(a.data.category))
+  .sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf())
+  .slice(0, 4);
+
+const tpePackages = [
+  { id: "TPE-001", name: "Doctrine Mining", desc: "야전교범·교리 문서를 LLM 친화적 프롬프트 라이브러리로 변환." },
+  { id: "TPE-002", name: "Response Card Library", desc: "응답카드 80% 시나리오 자동화용 큐레이션 + 검증." },
+  { id: "TPE-003", name: "STANAG 2103 Mapper", desc: "사내 데이터 모델 ↔ NATO CBRN-1~6 메시지 양방향 매핑." },
+  { id: "TPE-004", name: "OODA Compression Audit", desc: "기존 의사결정 사이클의 병목 측정 + AI 삽입점 진단 (33x 목표)." },
+  { id: "TPE-005", name: "Lattice Onboarding", desc: "Anduril Lattice 통합 워크숍 + 19/19 회귀 테스트 베이스라인 이전." },
+  { id: "TPE-006", name: "Red Team Validation", desc: "응답카드 라이브러리에 대한 적성 시뮬레이션 + 갱신 사이클 운영." },
+];
+
+const faqs = [
+  {
+    question: "TacticalPrompt는 일반 프롬프트 엔지니어링과 무엇이 다른가요?",
+    answer:
+      "일반 프롬프트 엔지니어링은 도메인 무관 휴리스틱(temperature·few-shot·chain-of-thought)에 집중합니다. TacticalPrompt는 군 교리 + STANAG 표준 + 응답카드 구조를 LLM 입력 스키마로 변환하는 도메인 특화 방법론입니다. 결과물은 검증 가능한 문서 패키지(TPE-001~006)이며, 마케팅 카피가 아닙니다.",
+  },
+  {
+    question: "TPE-001~006 결과물은 공개되나요?",
+    answer:
+      "네. github.com/uamkt에 Apache 2.0 라이선스로 단계별 공개 예정입니다. 공개를 통해 (1) 정부 의사결정자에 대한 thought leadership 확보, (2) 채용·파트너십 신뢰 자산 형성, (3) 90일 내 공개 원칙(Publication-First Rule) 준수를 동시에 달성합니다.",
+  },
+  {
+    question: "비용 구조는?",
+    answer:
+      "프로젝트당 KRW 80~120M 범위(2026 기준). 단발 컨설팅보다는 응답카드 라이브러리 공동 큐레이션·인시던트 회고를 포함한 분기·연간 retainer 모델을 권장합니다.",
+  },
+];
+
+const schemas = [
+  buildOrganizationSchema(ORGANIZATION),
+  buildProductSchema(product),
+  buildBreadcrumbSchema([
+    { name: "Home", url: "https://uamkt.com/" },
+    { name: "Services", url: "https://uamkt.com/services/tactical-prompt" },
+    { name: "TacticalPrompt", url: canonical },
+  ]),
+  buildFAQSchema(faqs),
+];
+
+const meta = {
+  title: "TacticalPrompt (TPE) — 방산 도메인 특화 프롬프트 엔지니어링 | UAM KoreaTech",
+  description:
+    "TacticalPrompt는 군 교리·STANAG 표준·응답카드 구조를 LLM 입력 스키마로 변환하는 컨설팅 서비스입니다. TPE-001~006 6단계 패키지로 OODA 33x 압축을 운영적으로 구현합니다.",
+  canonical,
+  ogImage: "/og-images/papers-ard-2026.png",
+};
+---
+<Base {...meta}>
+  <EntityHead schemas={schemas} slot="head" />
+
+  <article class="max-w-5xl mx-auto px-4 py-8">
+    <nav class="text-sm text-gray-500 mb-4">
+      <a href="/" class="hover:underline">Home</a> / <span>Services</span> / <span class="font-mono">TacticalPrompt</span>
+    </nav>
+
+    <header class="mb-10">
+      <div class="text-xs uppercase tracking-wider mb-2 font-mono" style="color: var(--color-gold);">
+        Defense AI Consulting · Service
+      </div>
+      <h1 class="text-4xl md:text-5xl font-bold mb-3" style="color: var(--color-navy);">
+        TacticalPrompt <span class="text-2xl text-gray-500 font-mono">(TPE)</span>
+      </h1>
+      <p class="text-lg text-gray-700 max-w-3xl">
+        Tactical Prompt Engineering. 군 교리·STANAG 표준·응답카드 구조를 LLM 입력 스키마로 변환하는 방산 도메인 특화 컨설팅.
+      </p>
+    </header>
+
+    <QuickAnswerBox question="TacticalPrompt는 어떤 서비스인가요?">
+      TacticalPrompt(TPE)는 국방·치안 조직이 LLM을 의사결정 보조에 도입할 때 도크리트린 정합성과 검증 가능성을 확보하기 위한 6단계 컨설팅 패키지입니다. 결과물은 (1) 응답카드 라이브러리, (2) STANAG 2103 매핑, (3) OODA 압축 감사 보고서, (4) Lattice 통합 베이스라인 등의 형태로 산출되며, github.com/uamkt에 Apache 2.0으로 단계별 공개됩니다. 박무진 대표가 직접 도메인 인터뷰부터 응답카드 검증까지 주도합니다.
+    </QuickAnswerBox>
+
+    {/* TPE Packages */}
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold mb-4">6단계 패키지 (TPE-001~006)</h2>
+      <div class="grid md:grid-cols-2 gap-3">
+        {tpePackages.map((pkg) => (
+          <div class="border border-gray-200 rounded-lg p-5">
+            <div class="text-xs uppercase tracking-wider font-mono mb-1" style="color: var(--color-gold);">{pkg.id}</div>
+            <h3 class="font-bold mb-2">{pkg.name}</h3>
+            <p class="text-sm text-gray-700">{pkg.desc}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    {/* Process */}
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold mb-4">진행 프로세스</h2>
+      <ol class="space-y-3 text-sm">
+        <li class="flex gap-4"><span class="font-mono font-bold w-12" style="color: var(--color-gold);">D+0</span><span><strong>도메인 인터뷰</strong> — 대상 부대·조직의 의사결정 사이클 매핑 (2일)</span></li>
+        <li class="flex gap-4"><span class="font-mono font-bold w-12" style="color: var(--color-gold);">D+7</span><span><strong>응답카드 시드</strong> — 80% 시나리오 라이브러리 1차 작성 + 검토</span></li>
+        <li class="flex gap-4"><span class="font-mono font-bold w-12" style="color: var(--color-gold);">D+21</span><span><strong>STANAG 2103 매핑</strong> — 사내 데이터 모델 ↔ NATO 메시지 양방향 변환기</span></li>
+        <li class="flex gap-4"><span class="font-mono font-bold w-12" style="color: var(--color-gold);">D+45</span><span><strong>OODA 감사</strong> — 기준 vs. AI-삽입 사이클 정량 비교 보고서</span></li>
+        <li class="flex gap-4"><span class="font-mono font-bold w-12" style="color: var(--color-gold);">D+60</span><span><strong>Lattice 베이스라인</strong> — 19/19 회귀 테스트 시드 이전 (선택)</span></li>
+        <li class="flex gap-4"><span class="font-mono font-bold w-12" style="color: var(--color-gold);">D+90</span><span><strong>레드팀 검증</strong> — 응답카드 라이브러리에 대한 적성 시뮬레이션</span></li>
+      </ol>
+    </section>
+
+    {/* Pricing */}
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold mb-4">비용</h2>
+      <div class="border border-gray-200 rounded-lg p-6">
+        <div class="text-xs uppercase tracking-wider font-mono mb-2" style="color: var(--color-gold);">2026 기준</div>
+        <p class="text-2xl font-bold mb-2" style="color: var(--color-navy);">KRW 80,000,000 ~ 120,000,000 / 프로젝트</p>
+        <p class="text-sm text-gray-700">
+          단발 컨설팅보다는 분기·연간 retainer 모델 권장 (응답카드 라이브러리 공동 큐레이션 + 인시던트 회고 포함).
+        </p>
+      </div>
+    </section>
+
+    {relatedArticles.length > 0 && (
+      <section class="mb-12">
+        <h2 class="text-2xl font-bold mb-4">관련 글</h2>
+        <div class="grid md:grid-cols-2 gap-4">
+          {relatedArticles.map((a) => (
+            <ArticleCard
+              slug={a.id}
+              title={a.data.title}
+              description={a.data.description}
+              category={a.data.category}
+              publishedAt={a.data.publishedAt}
+              quickAnswer={a.data.quickAnswer}
+            />
+          ))}
+        </div>
+      </section>
+    )}
+
+    <FAQSection items={faqs} />
+
+    <section class="mt-12 p-8 rounded-lg text-center" style="background-color: var(--color-navy); color: white;">
+      <h2 class="text-2xl font-bold mb-3">TacticalPrompt 의뢰</h2>
+      <p class="text-sm opacity-80 mb-5">박무진 대표가 직접 도메인 인터뷰부터 검증까지 주도합니다.</p>
+      <a href="/contact" class="inline-block px-6 py-3 rounded font-semibold" style="background-color: var(--color-gold); color: var(--color-navy);">
+        문의하기
+      </a>
+    </section>
+  </article>
+</Base>

@@ -1,0 +1,52 @@
+name: Publish to WordPress (cbrntactical.com)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '_content_pipeline/**/wordpress.md'
+  workflow_dispatch:
+    inputs:
+      content_path:
+        description: 'Content file path (e.g., _content_pipeline/2026-04-26/wordpress.md)'
+        required: true
+        type: string
+
+jobs:
+  publish-wordpress:
+    name: Publish to WordPress
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install requests python-frontmatter markdown
+
+      - name: Detect changed WordPress content files
+        id: detect
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "files=${{ github.event.inputs.content_path }}" >> $GITHUB_OUTPUT
+          else
+            CHANGED=$(git diff --name-only HEAD^ HEAD | grep -E '_content_pipeline/.*/wordpress\.md$' | tr '\n' ' ')
+            echo "files=$CHANGED" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Publish to WordPress
+        env:
+          WP_SITE_URL: ${{ secrets.WP_SITE_URL }}
+          WP_USERNAME: ${{ secrets.WP_USERNAME }}
+          WP_APP_PASSWORD: ${{ secrets.WP_APP_PASSWORD }}
+        run: |
+          for FILE in ${{ steps.detect.outputs.files }}; do
+            echo "📝 Publishing $FILE to WordPress..."
+            python scripts/publish_wordpress.py "$FILE"
+          done

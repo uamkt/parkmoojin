@@ -1,0 +1,104 @@
+---
+import Base from "../layouts/Base.astro";
+import EntityHead from "../components/EntityHead.astro";
+import { ORGANIZATION, BOOKS } from "../lib/entities";
+import { buildOrganizationSchema, buildBreadcrumbSchema } from "../lib/schema";
+
+const canonical = "https://uamkt.com/publications";
+
+const totalAsins = BOOKS.reduce((n, b) => n + (b.asinEbook ? 1 : 0) + (b.asinPaperback ? 1 : 0), 0);
+
+const seriesOrder = ["BLIS-D Engineering", "Bird Strike Trilogy", "ASERI", "Standalone"];
+const grouped = seriesOrder.map((s) => ({
+  series: s,
+  list: BOOKS.filter((b) => b.series === s),
+}));
+
+const schemas = [
+  buildOrganizationSchema(ORGANIZATION),
+  buildBreadcrumbSchema([
+    { name: "Home", url: "https://uamkt.com/" },
+    { name: "Publications", url: canonical },
+  ]),
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "UAM KoreaTech Publications",
+    url: canonical,
+    description: `Amazon Kindle Direct Publishing 출간 도서 ${BOOKS.length}권 전체 (${totalAsins} ASIN Live).`,
+  },
+];
+
+const meta = {
+  title: `Publications · Amazon KDP ${BOOKS.length}권 전체 | UAM KoreaTech`,
+  description: `Amazon Kindle Direct Publishing 출간 ${BOOKS.length}권 전체 — ASERI · Bird Strike Trilogy · BLIS-D Engineering 3 시리즈 ${totalAsins} ASIN.`,
+  canonical,
+};
+---
+<Base {...meta}>
+  <EntityHead schemas={schemas} slot="head" />
+
+  <article class="max-w-5xl mx-auto px-4 py-8">
+    <nav class="text-sm text-gray-500 mb-4">
+      <a href="/" class="hover:underline">Home</a> / <span class="font-mono">Publications</span>
+    </nav>
+
+    <header class="mb-10">
+      <div class="text-xs uppercase tracking-wider mb-2 font-mono" style="color: var(--color-gold);">
+        Amazon KDP — 2026-04-26 검증
+      </div>
+      <h1 class="text-4xl md:text-5xl font-bold mb-3" style="color: var(--color-navy);">
+        Publications
+      </h1>
+      <p class="text-lg text-gray-700 leading-relaxed max-w-3xl">
+        Amazon Kindle Direct Publishing 출간 <strong>{BOOKS.length}권 전체</strong> ·
+        <strong>{totalAsins} ASIN Live</strong>. 메인 페이지 노출 6권 외 시리즈별 전체 진열입니다.
+      </p>
+    </header>
+
+    {grouped.map((g) => (
+      <section class="mb-10">
+        <div class="flex items-baseline justify-between mb-4 flex-wrap gap-2">
+          <h2 class="text-2xl font-bold" style="color: var(--color-navy);">
+            {g.series} <span class="text-gray-500 font-normal text-lg">({g.list.length}권)</span>
+          </h2>
+        </div>
+        <div class="grid md:grid-cols-2 gap-3">
+          {g.list.map((b) => (
+            <article class="border border-gray-200 rounded-lg p-4 flex flex-col">
+              <div class="flex items-center gap-2 mb-2 flex-wrap">
+                <span class="text-[10px] font-mono uppercase px-2 py-0.5 rounded font-bold"
+                      style="background-color: #0a7a35; color: white;">Live</span>
+                <span class="text-[10px] text-gray-500 font-mono">{b.volume}</span>
+              </div>
+              <h3 class="font-bold mb-1 leading-snug" style="color: var(--color-navy);">{b.title}</h3>
+              {b.subtitle && <p class="text-xs text-gray-600 mb-2 leading-snug">{b.subtitle}</p>}
+              <div class="text-[10px] text-gray-500 font-mono mb-3">by {b.author} · {b.publishedAt}</div>
+              <div class="mt-auto flex flex-wrap gap-2 text-[11px]">
+                {b.asinEbook && (
+                  <a href={`https://www.amazon.com/dp/${b.asinEbook}`} target="_blank" rel="noopener"
+                     data-track-event="book_amazon_click"
+                     data-track-label={`publications ${b.title} eBook`}
+                     class="underline font-mono"
+                     style="color: var(--color-gold);">
+                    eBook ${b.priceEbook} →
+                  </a>
+                )}
+                {b.asinPaperback && (
+                  <a href={`https://www.amazon.com/dp/${b.asinPaperback}`} target="_blank" rel="noopener"
+                     data-track-event="book_amazon_click"
+                     data-track-label={`publications ${b.title} PB`}
+                     class="underline font-mono"
+                     style="color: var(--color-navy);">
+                    Paperback ${b.pricePaperback} →
+                  </a>
+                )}
+              </div>
+              {b.note && <p class="text-[10px] text-gray-500 italic mt-2">※ {b.note}</p>}
+            </article>
+          ))}
+        </div>
+      </section>
+    ))}
+  </article>
+</Base>

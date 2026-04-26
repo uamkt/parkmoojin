@@ -1,0 +1,27 @@
+# UAM KoreaTech — robots.txt
+# Updated: 2026-04-26
+
+User-agent: *
+Allow: /
+
+# AEO/SEO bots — explicit allow
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+# Sitemap (생성됨: @astrojs/sitemap)
+Sitemap: https://uamkt.com/sitemap-index.xml
+
+# RSS
+# https://uamkt.com/rss.xml

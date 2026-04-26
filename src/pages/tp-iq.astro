@@ -1,0 +1,130 @@
+---
+import Base from "../layouts/Base.astro";
+import EntityHead from "../components/EntityHead.astro";
+import { ORGANIZATION, FOUNDER, PILLARS } from "../lib/entities";
+import { buildOrganizationSchema, buildPersonSchema, buildBreadcrumbSchema } from "../lib/schema";
+
+const pillar = PILLARS.find((p) => p.id === "pillar-3")!;
+const canonical = "https://uamkt.com/tp-iq";
+
+const schemas = [
+  buildOrganizationSchema(ORGANIZATION),
+  buildPersonSchema(FOUNDER),
+  buildBreadcrumbSchema([
+    { name: "Home", url: "https://uamkt.com/" },
+    { name: pillar.slogan, url: canonical },
+  ]),
+  {
+    "@context": "https://schema.org",
+    "@type": "DefinedTerm",
+    "@id": `${canonical}#tp-iq`,
+    name: "TP-IQ (Tactical Prompt Intelligence Quotient)",
+    description:
+      "유에이엠코리아텍 자체 개발 전술지능지수 — 데이터 학습 이전 단계의 전략적 구조 설계를 코드화한 AI 의사결정 지원 모델",
+    inDefinedTermSet: { "@type": "DefinedTermSet", name: "UAM KoreaTech Tactical Frameworks" },
+    creator: { "@id": `${ORGANIZATION.url}#founder` },
+    url: canonical,
+  },
+];
+
+const meta = {
+  title: `TP-IQ · ${pillar.slogan} | UAM KoreaTech`,
+  description: pillar.summary,
+  canonical,
+};
+
+const evaluationDomains = [
+  { id: "D1", name: "전쟁사·교리 정합성", desc: "역사적 사례·교리 패턴과 AI 출력의 정합성 검증" },
+  { id: "D2", name: "심리적 의사결정 모델", desc: "지휘관 인지 부하·OODA 압축 시뮬레이션" },
+  { id: "D3", name: "전략적 구조 선반영", desc: "데이터 학습 이전 구조 설계의 사전 코드화" },
+  { id: "D4", name: "도메인 특수성 (CBRN·UAM)", desc: "방산·항공안전 도메인 정합성 자체 평가" },
+  { id: "D5", name: "Lattice·STANAG 호환", desc: "글로벌 표준(NATO JWARN·STANAG 2103) 정합성" },
+  { id: "D6", name: "반증가능성 (Falsifiability)", desc: "Popper 6-필드 — 강한 주장의 반증 조건 명시" },
+];
+---
+<Base {...meta}>
+  <EntityHead schemas={schemas} slot="head" />
+
+  <article class="max-w-5xl mx-auto px-4 py-8">
+    <nav class="text-sm text-gray-500 mb-4">
+      <a href="/" class="hover:underline">Home</a> / <span class="font-mono">{pillar.slogan}</span>
+    </nav>
+
+    <header class="mb-10 rounded-lg p-6 md:p-10" style={`background-color: ${pillar.accentSoft}; border-left: 6px solid ${pillar.accent};`}>
+      <div class="text-xs uppercase tracking-wider mb-2 font-mono" style={`color: ${pillar.accent};`}>
+        Pillar 3 · Dual Track
+      </div>
+      <h1 class="text-4xl md:text-5xl font-bold mb-3" style="color: var(--color-navy);">
+        TP-IQ · {pillar.slogan}
+      </h1>
+      <p class="text-xl text-gray-800 mb-3">{pillar.headline}</p>
+      <p class="text-base text-gray-700 leading-relaxed max-w-3xl">{pillar.summary}</p>
+    </header>
+
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold mb-5" style="color: var(--color-navy);">5 Core Components</h2>
+      <div class="grid md:grid-cols-2 gap-4">
+        {pillar.cards.map((c, i) => (
+          <a href={c.href}
+             class="block border-2 rounded-lg p-5 hover:opacity-90 transition"
+             style={`border-color: ${pillar.accent};`}>
+            <div class="text-[10px] uppercase tracking-wider font-mono mb-1 font-bold"
+                 style={`color: ${pillar.accent};`}>
+              {String(i + 1).padStart(2, "0")}
+            </div>
+            <h3 class="font-bold mb-2 leading-snug" style="color: var(--color-navy);">{c.name}</h3>
+            <p class="text-sm text-gray-700 leading-relaxed">{c.desc}</p>
+            <div class="text-xs font-mono mt-3 underline" style={`color: ${pillar.accent};`}>
+              View detail →
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    {/* TP-IQ 6 Domains */}
+    <section id="evaluation" class="mb-12">
+      <h2 class="text-2xl font-bold mb-5" style="color: var(--color-navy);">TP-IQ 6 평가 도메인</h2>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+        {evaluationDomains.map((d) => (
+          <article class="border border-gray-200 rounded-lg p-4">
+            <div class="text-xs font-mono mb-1" style={`color: ${pillar.accent};`}>{d.id}</div>
+            <h3 class="font-bold mb-1 leading-snug" style="color: var(--color-navy);">{d.name}</h3>
+            <p class="text-sm text-gray-700 leading-relaxed">{d.desc}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    {/* Originality Anchor */}
+    <section id="originality" class="mb-12 border-l-4 pl-6 py-4" style={`border-color: ${pillar.accent};`}>
+      <div class="text-xs uppercase tracking-wider font-mono mb-1" style={`color: ${pillar.accent};`}>Originality</div>
+      <h2 class="text-xl font-bold mb-2" style="color: var(--color-navy);">데이터 학습 이전 단계의 전략적 구조 설계 코드화</h2>
+      <p class="text-sm text-gray-700 leading-relaxed">
+        대부분의 AI 의사결정 지원 모델은 데이터베이스 수용 → 학습 → 적용 3단계로 동작합니다. TP-IQ는 그 이전
+        단계, 즉 <strong>"전략적 구조 설계"를 선 반영</strong>하는 코드화 프레임워크입니다. 박무진 대표의
+        전쟁사·심리학 전공과 방산기술특허 9건 단독 1저자 등록 이력에서 도출된, 타 기업에서 볼 수 없는
+        독창성입니다.
+      </p>
+    </section>
+
+    <section class="mt-12 p-8 rounded-lg text-center" style={`background-color: ${pillar.accentSoft};`}>
+      <h2 class="text-xl font-bold mb-2" style="color: var(--color-navy);">TP-IQ 컨설팅·도입 문의</h2>
+      <p class="text-sm text-gray-700 mb-4">박무진 대표가 1차 컨택부터 직접 응답합니다.</p>
+      <div class="flex flex-wrap gap-2 justify-center">
+        <a href="/contact?track=defense"
+           data-track-event="cta_defense_click" data-track-label="tpiq_pillar_page"
+           class="inline-block px-6 py-3 rounded font-semibold transition hover:opacity-90"
+           style="background-color: var(--color-gold); color: var(--color-navy);">
+          Defense 트랙 →
+        </a>
+        <a href="https://tacticalprompt.com/" target="_blank" rel="noopener"
+           data-track-event="site_external_click" data-track-label="tacticalprompt_from_tpiq"
+           class="inline-block px-6 py-3 rounded font-semibold border-2 transition hover:opacity-90"
+           style="border-color: var(--color-navy); color: var(--color-navy);">
+          tacticalprompt.com →
+        </a>
+      </div>
+    </section>
+  </article>
+</Base>

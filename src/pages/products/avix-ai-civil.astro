@@ -1,0 +1,193 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import EntityHead from "../../components/EntityHead.astro";
+import QuickAnswerBox from "../../components/QuickAnswerBox.astro";
+import FAQSection from "../../components/FAQSection.astro";
+import ArticleCard from "../../components/ArticleCard.astro";
+import { ORGANIZATION, PRODUCTS, BSM_LOOP_STAGES, BSM_MODULES } from "../../lib/entities";
+import {
+  buildOrganizationSchema,
+  buildProductSchema,
+  buildBreadcrumbSchema,
+  buildFAQSchema,
+} from "../../lib/schema";
+
+const product = PRODUCTS.find((p) => p.name === "AVIX-AI Civil")!;
+const canonical = "https://uamkt.com/products/avix-ai-civil";
+
+const relatedArticles = (await getCollection("articles"))
+  .filter((a) => a.data.category === "case-studies" || a.data.category === "market-trends" || a.data.category === "policy")
+  .sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf())
+  .slice(0, 4);
+
+const segments = [
+  { id: "01", name: "공항", desc: "국내 7개 주요 공항 활주로·접근로 조류·야생동물 위험 폐루프 차단" },
+  { id: "02", name: "UAM 버티포트", desc: "도심 항공 모빌리티 이착륙장 야생동물 인텔리전스" },
+  { id: "03", name: "풍력 발전 단지", desc: "조류 충돌 회피 자동 정지·재시동 (이중 KPI: 발전량 + 보호종)" },
+  { id: "04", name: "농업 (스마트팜)", desc: "작물 피해 야생동물 비살상 차단 + 수확량 보호 KPI" },
+  { id: "05", name: "국립공원", desc: "보호종 모니터링 + 침입종 조기 경보 (Habitat Profile Engine)" },
+  { id: "06", name: "스마트시티", desc: "공원·하천 야생동물 갈등 데이터 + 환경부 보고 자동화" },
+];
+
+const faqs = [
+  {
+    question: "AVIX-AI Civil은 V3와 어떻게 다릅니까?",
+    answer:
+      "AVIX-AI Civil은 동일한 4-way Fusion 두뇌(영상·음향·레이더·드론)를 민간 6 세그먼트(공항·UAM 버티포트·풍력·농업·국립공원·스마트시티)에 BSM 2.0 폐루프 OS로 적용한 Wildlife Intelligence Platform입니다. V3가 군 비행장·국방 표준(Lattice·STANAG)에 정렬된 dual-use 두뇌라면, Civil은 OGC SensorThings v1.1 시민 표준 + KPI 폐루프 학습 + 환경부·지자체 보고 자동화에 최적화되어 있습니다.",
+  },
+  {
+    question: "BSM 2.0의 핵심 4 모듈은 무엇입니까?",
+    answer:
+      "M1 지능형 CCTV 조류 객체 인식(Re-ID 트래킹), M2 Airfield Habitat Profile Engine(LULC·수목·수계·먹이·시계열 패턴 DB), M3 제압자산 오케스트레이션 라이브러리(음향·에어분사·신호탄 직교 조합), M4 KPI 폐루프 학습(조치 결과 자동 수집 → 가중치 강화학습) 4개입니다.",
+  },
+  {
+    question: "국토부·공항공사 통계 617건/10년 사회문제는 무엇입니까?",
+    answer:
+      "국토부 및 한국공항공사가 2014–2024년 10년간 집계한 국내 공항 조류충돌 보고 건수입니다. 단순 알람 수준의 기존 시스템으로는 추세 둔화가 어렵다는 한계가 명확하며, AVIX-AI Civil은 이 사회문제를 폐루프 OS로 직접 대응하는 첫 한국형 솔루션입니다.",
+  },
+  {
+    question: "글로벌 항공안전 플랫폼과의 관계는?",
+    answer:
+      "Anduril Lattice 등 글로벌 플랫폼은 군용 지휘통제 메시 위주이며, 민간 공항 wildlife 도메인은 공백입니다. 본사는 19/19 HTTP 200 PoC를 통해 \"우리가 글로벌 표준의 도메인 공백을 자체 PoC로 메우고 있다\"는 사회·기술적 정통성 신호를 빌드업하고 있습니다.",
+  },
+];
+
+const schemas = [
+  buildOrganizationSchema(ORGANIZATION),
+  buildProductSchema(product),
+  buildBreadcrumbSchema([
+    { name: "Home", url: "https://uamkt.com/" },
+    { name: "Products", url: "https://uamkt.com/products/avix-ai-civil" },
+    { name: "AVIX-AI Civil", url: canonical },
+  ]),
+  buildFAQSchema(faqs),
+];
+
+const meta = {
+  title: "AVIX-AI Civil | Wildlife Intelligence Platform · BSM 2.0 폐루프 OS",
+  description:
+    "공항·UAM 버티포트·풍력·농업·국립공원·스마트시티 6 세그먼트 야생동물 인텔리전스 플랫폼. BSM 2.0 폐루프 OS + 4 핵심 모듈. 국토부 617건/10년 사회문제 직접 대응.",
+  canonical,
+};
+---
+<Base {...meta}>
+  <EntityHead schemas={schemas} slot="head" />
+
+  <article class="max-w-5xl mx-auto px-4 py-8">
+    <nav class="text-sm text-gray-500 mb-4">
+      <a href="/" class="hover:underline">Home</a> /
+      <span class="font-mono">Products / AVIX-AI Civil</span>
+    </nav>
+
+    <header class="mb-10">
+      <div class="flex items-center gap-2 mb-3 flex-wrap">
+        <span class="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded font-bold"
+              style="background-color: var(--color-teal-soft); color: var(--color-teal);">
+          Civil Track
+        </span>
+        <span class="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded"
+              style="background-color: var(--color-gold-soft); color: var(--color-gold);">
+          BSM 2.0 Closed-Loop OS
+        </span>
+      </div>
+      <h1 class="text-4xl md:text-5xl font-bold mb-3" style="color: var(--color-navy);">AVIX-AI Civil</h1>
+      <p class="text-lg text-gray-700 mb-2"><strong>Wildlife Intelligence Platform</strong> — 공항·UAM·풍력·농업·국립공원·스마트시티 6 세그먼트</p>
+      <p class="text-sm text-gray-600 leading-relaxed max-w-3xl">
+        국토부·한국공항공사 통계로 보고된 <strong>국내 공항 조류충돌 617건/10년(2014–2024)</strong> 사회문제를
+        폐루프 AI(BSM 2.0 + AVIX-AI)로 자동 차단하는 한국형 Wildlife Intelligence Platform입니다.
+        OGC SensorThings API v1.1 표준 기반, 글로벌 항공안전 플랫폼의 도메인 공백을 자체 PoC로 빌드업합니다.
+      </p>
+    </header>
+
+    <QuickAnswerBox question="AVIX-AI Civil은 어떤 문제를 해결합니까?">
+      AVIX-AI Civil은 공항·UAM 버티포트의 조류충돌 위험을 5단 폐루프 OS(IN → PROCESS → OUT → SOLUTION → KPI)로
+      자동 차단하는 Wildlife Intelligence Platform입니다. 4 핵심 모듈(M1 지능형 CCTV 조류 인식, M2 Habitat
+      Profile Engine, M3 제압자산 오케스트레이션, M4 KPI 폐루프 학습)을 OGC SensorThings v1.1 표준으로
+      연동하며, 6 세그먼트(공항·UAM·풍력·농업·국립공원·스마트시티)로 확장 가능합니다. 국토부·공항공사
+      통계 617건/10년 사회문제를 직접 대응하는 첫 한국형 솔루션입니다.
+    </QuickAnswerBox>
+
+    {/* BSM 2.0 5단 순환 */}
+    <section class="my-10">
+      <h2 class="text-2xl font-bold mb-3" style="color: var(--color-navy);">BSM 2.0 — 5단 폐루프 순환</h2>
+      <p class="text-sm text-gray-700 mb-5 leading-relaxed">
+        기존 선형 Alert 시스템(IN → OUT 2단)을 5단 폐루프로 확장. KPI 단계에서 조치 결과를 자동 수집하여
+        IN 단계의 모델 재학습으로 환원하는 Reinforcement Loop가 본 OS의 핵심입니다.
+      </p>
+      <div class="flex flex-wrap items-center justify-center gap-2 md:gap-3 mb-3">
+        {BSM_LOOP_STAGES.map((s, i) => (
+          <>
+            <div class="rounded-lg px-3 py-2 md:px-4 md:py-3 text-center min-w-[100px] md:min-w-[140px]"
+                 style={`background-color: ${i === 4 ? 'var(--color-teal)' : 'var(--color-navy)'}; color: white;`}>
+              <div class="text-xs md:text-sm font-mono font-bold tracking-wider">{s.stage}</div>
+              <div class="text-[10px] md:text-xs opacity-80 mt-1 leading-tight">{s.description.slice(0, 28)}{s.description.length > 28 ? "…" : ""}</div>
+            </div>
+            {i < BSM_LOOP_STAGES.length - 1 && (
+              <div class="text-xl md:text-2xl" style="color: var(--color-gold);">→</div>
+            )}
+          </>
+        ))}
+      </div>
+    </section>
+
+    {/* 4 핵심 모듈 */}
+    <section class="my-10">
+      <h2 class="text-2xl font-bold mb-5" style="color: var(--color-navy);">4 핵심 모듈 (M1 ~ M4)</h2>
+      <div class="grid md:grid-cols-2 gap-3">
+        {BSM_MODULES.map((m) => (
+          <article class="border-2 rounded-lg p-5" style="border-color: var(--color-teal);">
+            <div class="text-xs uppercase tracking-wider font-mono mb-2 font-bold" style="color: var(--color-teal);">
+              Module {m.id}
+            </div>
+            <h3 class="font-bold mb-2 leading-snug" style="color: var(--color-navy);">{m.name}</h3>
+            <p class="text-sm text-gray-700 leading-relaxed">{m.description}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    {/* 6 세그먼트 */}
+    <section class="my-10">
+      <h2 class="text-2xl font-bold mb-5" style="color: var(--color-navy);">6 적용 세그먼트</h2>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+        {segments.map((s) => (
+          <article class="border border-gray-200 rounded-lg p-4">
+            <div class="text-xs font-mono mb-1" style="color: var(--color-teal);">SEG {s.id}</div>
+            <h3 class="font-bold mb-1" style="color: var(--color-navy);">{s.name}</h3>
+            <p class="text-sm text-gray-700 leading-relaxed">{s.desc}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <FAQSection items={faqs} />
+
+    <section class="my-10">
+      <h2 class="text-2xl font-bold mb-5" style="color: var(--color-navy);">관련 자료</h2>
+      <div class="grid md:grid-cols-2 gap-3">
+        {relatedArticles.map((a) => (
+          <ArticleCard
+            slug={a.id}
+            title={a.data.title}
+            description={a.data.description}
+            category={a.data.category}
+            publishedAt={a.data.publishedAt}
+            quickAnswer={a.data.quickAnswer}
+          />
+        ))}
+      </div>
+    </section>
+
+    <section class="mt-12 p-8 rounded-lg text-center" style="background-color: var(--color-teal-soft);">
+      <h2 class="text-2xl font-bold mb-3" style="color: var(--color-navy);">민간 공항·드론특구 도입 문의</h2>
+      <p class="text-sm text-gray-700 mb-5 max-w-2xl mx-auto">
+        IIAC·KIAST·KAC·드론특구 운영기관의 도입 검토 요청에 박무진 대표가 직접 응답합니다.
+      </p>
+      <a href="/contact?track=civil" class="inline-block px-6 py-3 rounded font-semibold transition hover:opacity-90"
+         style="background-color: var(--color-teal); color: var(--color-navy);">
+        Civil 트랙 문의 →
+      </a>
+    </section>
+  </article>
+</Base>

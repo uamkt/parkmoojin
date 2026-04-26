@@ -1,0 +1,89 @@
+# UAM KoreaTech (uamkt.com) — V2.3 서사적 카피 · 3-Pillar 아키텍처
+
+> 한국 최초 UAM 버드스트라이크 운영. Anduril Lattice가 인정한 공백 발견자.
+> 블리드에어 플랫폼으로 조류 서식지 제거 + CBRN-CADS 두 사업을 동시에.
+> 스위스 BOXO3 LOI · 19/19 Lattice 실증 · TP-IQ 전쟁사가 설계한 AI.
+> Amazon KDP 10권 (16 ASIN Live) · Apple App Store Connect 8종 등록 (2026-04-26 실측 검증).
+
+## V2.3 서사 5장 (Narrative Storytelling)
+
+1. **회사 설립** — "한국 최초, UAM 버드스트라이크" / Anduril Lattice가 인정한 공백 발견자
+2. **플랫폼** — "블리드에어, 두 사업의 시작" / 조류 서식지 제거 + CBRN-CADS
+3. **원천기술** — "스위스 40년 기술, 한국 모빌리티" / BOXO3 가스멸균, 하이브리드 챔버
+4. **AI 완성** — "AI로 완성하는 두 사업" / 저작권 등록 완료 라인업
+5. **TP-IQ** — "전쟁사가 설계한 AI" / 전술 판단의 코드화
+
+## 3 Pillars (V2.3 메인 진열)
+
+- [Pillar 1 · 조류와 항공의 공존](https://uamkt.com/avix): AVIX 시리즈 + BSM 2.0 폐루프 OS + Bird Strike Trilogy
+- [Pillar 2 · 폐열로 지키는 전장](https://uamkt.com/cbrn-cads): BLIS-D + CBRN-CADS + BOXO3 챔버 + BLIS-D Engineering 시리즈
+- [Pillar 3 · 전쟁사가 설계한 AI](https://uamkt.com/tp-iq): TP-IQ 전술지능지수 + 박무진 프로필 + ASERI + Architecture of Command
+
+## Strategic Partners (V2.3 §D-1 — 6사 → 2사 응축)
+
+- **Anduril Industries (USA)** — Lattice Partner Track · V5.1 Bundle Submitted
+- **BOX O3 AG (Switzerland)** — LOI · Development AND Purchase Agreement
+
+## Articles by Category
+
+- [Market Trends](https://uamkt.com/articles/category/market-trends): 시장 트렌드 보고서
+- [Papers](https://uamkt.com/articles/category/papers): Mini-papers (ARD doctrine 등)
+- [Business Models](https://uamkt.com/articles/category/business-models): BMC·9-block 분석
+- [CBRN AI](https://uamkt.com/articles/category/cbrn-ai): CBRN 전술 분석 (JWARN 비교 등)
+- [Policy](https://uamkt.com/articles/category/policy): 정책 분석 (DoD RFI 2026 등)
+- [Case Studies](https://uamkt.com/articles/category/case-studies): Lattice 19/19 등 실증 사례
+
+## Founder
+
+- [박무진 (Park Moojin)](https://uamkt.com/contact): CEO · 버티포트 인허가/녹색기술/CBRN AI 아키텍트
+  - 동일 인물 식별자: `https://uamkt.com/#founder` (모든 자매 사이트에서 일관)
+
+## Connected Sites (sameAs) — V2.0 (yongyumee.com 2건 제거, tacticalprompt.com 신규 진열)
+
+- [tacticalprompt.com](https://tacticalprompt.com/): ★ 본사 핵심 SaaS — 전술 프롬프트 엔지니어링 플랫폼 (Released)
+- [cbrntactical.com](https://cbrntactical.com/): CBRN 전술 분석 spoke (Knowledge Hub)
+
+## Publications (Amazon KDP — 10권 Live · 2026-04-26 검증)
+
+### ASERI 시리즈 (3권 — Aerospace ESG Rating Initiative)
+- [Aerospace Industry ESG Evaluation Methodology — Vol.2](https://www.amazon.com/dp/B0GJTJKBGX) · Moojin Park · $9.99 eBook
+- [Building the ASERI ESG Evaluation Portal — Vol.3](https://www.amazon.com/dp/B0FXV9J4QN) · Moojin Park · $9.99 eBook · [Paperback](https://www.amazon.com/dp/B0GWJLSGX7) $19.99
+- [The Tragedy of the Space Commons — 별권](https://www.amazon.com/dp/B0G3KCX7XW) · Moojin Park · $9.99 eBook · [Paperback](https://www.amazon.com/dp/B0GW9713J3) $19.99
+
+### Bird Strike Trilogy (3권 + Standalone 1권)
+- [The AbriIndex Era — Vol.1](https://www.amazon.com/dp/B0FL29FQQM) · Moojin Park · $9.99 eBook
+- [Kill Chain for the Sky — Vol.2](https://www.amazon.com/dp/B0GGYF77B9) · UAM Korea Tech · $9.99 eBook
+- [Vertiport Zero — Vol.3](https://www.amazon.com/dp/B0F2ZKFQRN) · UAM Korea Tech · $9.99 eBook · [Paperback](https://www.amazon.com/dp/B0GX55FK1R) $9.99
+- [The Architecture of Command — Standalone](https://www.amazon.com/dp/B0GWT9SZ4C) · MOOJIN PARK · $9.99 eBook · [Paperback](https://www.amazon.com/dp/B0GWTC15L3) $19.99
+
+### BLIS-D Engineering 시리즈 (3권)
+- [BLIS-D — Engineering the Future of Airborne CBRN Decontamination](https://www.amazon.com/dp/B0FQ1X1TD3) · Moojin Park · $29.99 eBook · [Paperback](https://www.amazon.com/dp/B0GWD8GYDF) $34.99
+- [BLIS-D Vol.2 — Threat Detection and Operational Response](https://www.amazon.com/dp/B0GWVQYJ17) · UAM KoreaTech Research Institute · $9.99 eBook · [Paperback](https://www.amazon.com/dp/B0GXRZ5RTL) $34.99
+- [BLIS-D Vol.3 — Integration and Future Deployment (Paperback)](https://www.amazon.com/dp/B0GX296XQT) · UAM KoreaTech Research Institute · $34.99 ※ eBook 차단 해결 중
+
+## Applications (Apple App Store Connect — 8종 등록 · 2026-04-26 검증)
+
+| 앱 | 버전 | 상태 | Track |
+|----|------|------|-------|
+| CBRN Tactical | iOS 1.0 | Available | Defense |
+| AVIX-AI | iOS 1.0 | Available | Civil/Dual |
+| BLIS-D | iOS 1.0 | Available | Defense/Dual |
+| CBRN-CADS | iOS 1.0 | Available | Defense |
+| K-UAM | iOS 1.1 | Available | Civil |
+| 근접항공제독지원 CADS | iOS 1.0 | Coming Soon | Defense |
+| TacticalPrompt | iOS 1.0 | In Review | Dual |
+| Bird Strike | iOS 1.0 | In Review | Civil/Dual |
+
+## Optional
+
+- [RSS Feed](https://uamkt.com/rss.xml): 6 카테고리 통합 피드 (Perplexity Publisher 제출 대상)
+- [Sitemap](https://uamkt.com/sitemap-index.xml): 22 URL
+- [Search](https://uamkt.com/search): Pagefind 정적 풀텍스트 검색 (한글 지원)
+
+## Verification Standards
+
+본 사이트는 4-Level Verification Literacy를 준수합니다:
+- L1 공식 출처 (KIPRIS·USPTO·CNIPA·DoD·NATO)
+- L2 1차 자료 (논문·특허 본문)
+- L3 검증된 2차 (피어 리뷰·정부 보고서)
+- L4 추정·해석 (명시적 표시)

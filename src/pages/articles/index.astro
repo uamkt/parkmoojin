@@ -1,0 +1,75 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import EntityHead from "../../components/EntityHead.astro";
+import ArticleCard from "../../components/ArticleCard.astro";
+import { CATEGORY_META, ARTICLE_CATEGORY_LIST, type ArticleCategory } from "../../content.config";
+import { ORGANIZATION } from "../../lib/entities";
+import { buildOrganizationSchema, buildBreadcrumbSchema } from "../../lib/schema";
+
+const articles = (await getCollection("articles")).sort(
+  (a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf()
+);
+
+const articlesByCategory: Record<ArticleCategory, typeof articles> = {
+  "market-trends": [],
+  papers: [],
+  "business-models": [],
+  "cbrn-ai": [],
+  policy: [],
+  "case-studies": [],
+};
+for (const a of articles) {
+  articlesByCategory[a.data.category].push(a);
+}
+
+const schemas = [
+  buildOrganizationSchema(ORGANIZATION),
+  buildBreadcrumbSchema([
+    { name: "Home", url: "https://uamkt.com/" },
+    { name: "Articles", url: "https://uamkt.com/articles" },
+  ]),
+];
+
+const meta = {
+  title: "Articles | UAM KoreaTech — CBRN AI · 시장 동향 · 정책 분석",
+  description:
+    "유에이엠코리아텍의 시장 동향 리포트, 미니 논문, 사업 모델 분석, CBRN AI 전술 분석, 정책 분석, 케이스 스터디. 6개 카테고리.",
+  canonical: "https://uamkt.com/articles",
+};
+---
+<Base {...meta}>
+  <EntityHead schemas={schemas} slot="head" />
+
+  <section class="max-w-5xl mx-auto px-4 py-8">
+    <h1 class="text-3xl md:text-4xl font-bold mb-2" style="color: var(--color-navy);">Articles</h1>
+    <p class="text-gray-700 mb-8">총 {articles.length}개 글 · 6개 카테고리</p>
+
+    {/* 카테고리 인덱스 */}
+    <nav class="grid md:grid-cols-3 gap-3 mb-12">
+      {ARTICLE_CATEGORY_LIST.map((cat) => (
+        <a href={`/articles/category/${cat}`}
+           class="border border-gray-200 rounded-lg p-4 hover:border-gold transition">
+          <div class="text-xs uppercase tracking-wider text-gray-500 mb-1 font-mono">{cat}</div>
+          <div class="font-semibold">{CATEGORY_META[cat].ko}</div>
+          <div class="text-xs text-gray-500 mt-1">{articlesByCategory[cat].length}건</div>
+        </a>
+      ))}
+    </nav>
+
+    {/* 최근 글 */}
+    <h2 class="text-2xl font-bold mb-4">Latest Articles</h2>
+    <div class="grid md:grid-cols-2 gap-4">
+      {articles.map((a) => (
+        <ArticleCard
+          slug={a.id}
+          title={a.data.title}
+          description={a.data.description}
+          category={a.data.category}
+          publishedAt={a.data.publishedAt}
+          quickAnswer={a.data.quickAnswer}
+        />
+      ))}
+    </div>
+  </section>
+</Base>
