@@ -22,11 +22,8 @@ import {
 const allArticles = (await getCollection("articles"))
   .sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf());
 
-// V2.3 §E-2 — 5 categories priority order (사용자 수정: 5줄 리스트 진열)
-const recentArticles = ["market-trends", "policy", "case-studies", "papers", "cbrn-ai", "business-models"]
-  .map((cat) => allArticles.find((a) => a.data.category === cat))
-  .filter(Boolean)
-  .slice(0, 5) as typeof allArticles;
+// V2.4 — 최신 발행순 상위 3개 (3장 카드 진열)
+const recentArticles = allArticles.slice(0, 3);
 
 // 카테고리 한글 라벨 (Recent Articles 진열용)
 const categoryLabel: Record<string, string> = {
@@ -393,51 +390,66 @@ const trackColor = {
     </div>
   </section>
 
-  {/* ─── Section 9 · #articles — Editorial List 5줄 (사용자 수정안) ── */}
+  {/* ─── Section 9 · #articles — V2.4 최신 인사이트 3장 카드 ── */}
   <section id="articles" class="max-w-6xl mx-auto px-4 py-14">
     <div class="text-center mb-10">
       <div class="text-xs uppercase tracking-[0.2em] font-mono mb-2" style="color: var(--color-gold);">{SECTION_SLOGANS.articles.caption}</div>
       <h2 class="text-3xl md:text-4xl font-bold" style="color: var(--color-navy);">{SECTION_SLOGANS.articles.title}</h2>
     </div>
 
-    <ol class="border-t border-gray-200">
-      {recentArticles.map((a, i) => {
-        const dateStr = a.data.publishedAt.toISOString().slice(0, 10).replace(/-/g, ". ");
-        const label = categoryLabel[a.data.category] ?? a.data.category;
-        return (
-          <li class="border-b border-gray-200">
+    {recentArticles.length === 0 ? (
+      <div class="text-center py-12 text-gray-400 font-mono text-sm">
+        곧 첫 인사이트가 발행됩니다.
+      </div>
+    ) : (
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {recentArticles.map((a) => {
+          const dateStr = a.data.publishedAt.toISOString().slice(0, 10).replace(/-/g, ". ");
+          const label = categoryLabel[a.data.category] ?? a.data.category;
+          return (
             <a href={`/articles/${a.id}`}
-               class="grid grid-cols-12 gap-3 md:gap-6 items-center px-2 md:px-4 py-5 md:py-6 hover:bg-gray-50 transition group">
-              {/* Index — italic serif gold */}
-              <div class="col-span-2 md:col-span-1 italic font-serif text-2xl md:text-3xl tracking-tight"
-                   style="color: var(--color-gold);">
-                {String(i + 1).padStart(2, "0")}
+               class="group block bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+              {/* Card top — category bar */}
+              <div class="px-6 pt-6 pb-3 flex items-center justify-between">
+                <span class="text-[11px] font-mono uppercase tracking-[0.15em]"
+                      style="color: var(--color-gold);">
+                  {label}
+                </span>
+                <span class="text-xs font-mono text-gray-400">{dateStr}</span>
               </div>
-              {/* Category — uppercase gold */}
-              <div class="col-span-10 md:col-span-3 text-[11px] md:text-xs font-mono uppercase tracking-[0.15em]"
-                   style="color: var(--color-gold);">
-                {label}
+
+              {/* Card body — title + description */}
+              <div class="px-6 pb-6">
+                <h3 class="text-lg md:text-xl font-bold leading-snug mb-3 group-hover:underline"
+                    style="color: var(--color-navy);">
+                  {a.data.title}
+                </h3>
+                {a.data.description && (
+                  <p class="text-sm text-gray-600 leading-relaxed line-clamp-3">
+                    {a.data.description}
+                  </p>
+                )}
               </div>
-              {/* Title — bold navy */}
-              <div class="col-span-12 md:col-span-6 text-base md:text-lg font-semibold leading-snug group-hover:underline"
-                   style="color: var(--color-navy);">
-                {a.data.title}
-              </div>
-              {/* Date — gray right */}
-              <div class="col-span-12 md:col-span-2 text-xs font-mono text-gray-400 md:text-right">
-                {dateStr}
+
+              {/* Card bottom — read more */}
+              <div class="px-6 pb-6 pt-2 border-t border-gray-100">
+                <span class="text-xs font-mono inline-flex items-center gap-1"
+                      style="color: var(--color-gold);">
+                  자세히 읽기 <span class="group-hover:translate-x-1 transition-transform">→</span>
+                </span>
               </div>
             </a>
-          </li>
-        );
-      })}
-    </ol>
+          );
+        })}
+      </div>
+    )}
 
-    <div class="text-center mt-8">
+    <div class="text-center mt-10">
       <a href="/articles"
          data-track-event="nav_section_click" data-track-label="articles_more"
-         class="text-sm font-mono underline" style="color: var(--color-gold);">
-        전체 게시판 보기 →
+         class="inline-flex items-center gap-2 px-6 py-3 rounded font-mono text-sm border-2 transition hover:bg-gray-50"
+         style="border-color: var(--color-gold); color: var(--color-navy);">
+        전체 인사이트 보기 →
       </a>
     </div>
   </section>
