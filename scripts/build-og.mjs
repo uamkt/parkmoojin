@@ -27,9 +27,10 @@ const FONT_PATH =
   process.env.OG_FONT_PATH || "/System/Library/Fonts/Supplemental/AppleGothic.ttf";
 
 if (!existsSync(FONT_PATH)) {
-  console.error(`[build-og] Font not found: ${FONT_PATH}`);
-  console.error("[build-og] Set OG_FONT_PATH=/path/to/font.ttf and re-run.");
-  process.exit(1);
+  console.warn(`[build-og] Font not found: ${FONT_PATH}`);
+  console.warn("[build-og] Skipping OG image generation (set OG_FONT_PATH to enable).");
+  console.warn("[build-og] Build will continue without OG images.");
+  process.exit(0);
 }
 const FONT = readFileSync(FONT_PATH);
 
