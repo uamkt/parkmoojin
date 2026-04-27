@@ -11,8 +11,10 @@ on:
       - 'src/lib/**'
       - 'src/styles/**'
       - 'public/**'
+      - 'scripts/**'
       - 'astro.config.mjs'
       - 'package.json'
+      - '.github/workflows/publish-hub.yml'
   workflow_dispatch:
 
 jobs:
