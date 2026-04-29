@@ -6,6 +6,11 @@
  * This keeps local dev + previews silent and ensures we never accidentally
  * report internal traffic to production analytics.
  *
+ * 2026-04-29 fix: 라이브 사이트(uamkt.com) 진단 결과 PUBLIC_GA4_ID env var가
+ * Netlify에 미설정되어 GA4 로더가 아예 호출되지 않음 (window.gtag 미존재).
+ * 운영 안정성을 위해 production host(uamkt.com)에서는 측정 ID hardcoded fallback을
+ * 적용한다. 로컬·preview에서는 여전히 silent (host 체크).
+ *
  * Event taxonomy (matches V2.0 §F-1 + V2.1 KDP·App Store extensions)
  *   cta_civil_click       — Civil Track CTA clicks (mailto + page CTA)
  *   cta_defense_click     — Defense Track CTA clicks
@@ -17,7 +22,10 @@
  * Add `data-track-event="<event_name>"` and optional `data-track-label`
  * to any element to fire automatically.
  */
-const GA4_ID = import.meta.env.PUBLIC_GA4_ID;
+// 우선순위: env var → production 빌드일 때만 hardcoded fallback → 그 외 silent (dev/preview)
+const GA4_ID =
+  import.meta.env.PUBLIC_GA4_ID ||
+  (import.meta.env.PROD ? 'G-ZBPMPSCXE9' : undefined);
 ---
 {GA4_ID && (
   <>
