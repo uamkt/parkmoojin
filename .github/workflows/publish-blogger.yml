@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - '_content_pipeline/**/blogger.md'
+      - '_content_pipeline/**/blogger2.md'
   workflow_dispatch:
     inputs:
       content_path:
@@ -49,7 +50,7 @@ jobs:
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             echo "files=${{ github.event.inputs.content_path }}" >> $GITHUB_OUTPUT
           else
-            CHANGED=$(git diff --name-only HEAD^ HEAD | grep -E '_content_pipeline/.*/blogger\.md$' | tr '\n' ' ')
+            CHANGED=$(git diff --name-only HEAD^ HEAD | grep -E '_content_pipeline/.*/blogger2?\.md$' | tr '\n' ' ')
             echo "files=$CHANGED" >> $GITHUB_OUTPUT
           fi
 
