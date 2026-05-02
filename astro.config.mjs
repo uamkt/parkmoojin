@@ -12,6 +12,7 @@ export default defineConfig({
   adapter: vercel({
     webAnalytics: { enabled: false },
     imageService: false,
+    maxDuration: 120,
   }),
   build: {
     format: 'directory',
