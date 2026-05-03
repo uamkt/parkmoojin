@@ -154,9 +154,11 @@ ${originalMarkdown}
 
 Repackage this for cbrntactical.com following all rules. Output the EXACT METADATA + HTML format. Do not include any text outside the format markers. Do not use markdown code fences.`;
 
+  // max_tokens 7000 -> 5000: Vercel 함수 120s 한도 + Phase 0 동시 실행
+  // 1800-2200 단어 수준 (5000 토큰 ~ 30초 → 22초)
   const response = await client.messages.create({
     model: "claude-sonnet-4-6",
-    max_tokens: 7000,
+    max_tokens: 5000,
     system: REPACKAGE_SYSTEM_PROMPT,
     messages: [{ role: "user", content: userPrompt }],
   });

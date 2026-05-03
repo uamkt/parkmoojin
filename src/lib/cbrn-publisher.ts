@@ -136,9 +136,11 @@ PUBLISH DATE (use exactly): ${dateStr}
 
 Generate the complete article in the exact format specified. Output starts with --- and ends with the final Conclusion paragraph.`;
 
+  // max_tokens 6000 -> 4500: Vercel 함수 120s 한도 + Phase 1-A syndication
+  // 1500-2000 단어 수준 (4500 토큰 ~ 90초 → 65초)
   const response = await client.messages.create({
     model: "claude-sonnet-4-6",
-    max_tokens: 6000,
+    max_tokens: 4500,
     system: SYSTEM_PROMPT,
     messages: [{ role: "user", content: userPrompt }],
   });
