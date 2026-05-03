@@ -9,5 +9,16 @@
       "path": "/api/cron/publish-cbrn-en?slot=evening",
       "schedule": "0 9 * * *"
     }
-  ]
+  ],
+  "functions": {
+    "_render.func/**": {
+      "maxDuration": 300
+    },
+    "src/pages/api/cron/publish-cbrn-en.ts": {
+      "maxDuration": 300
+    },
+    "api/cron/publish-cbrn-en.ts": {
+      "maxDuration": 300
+    }
+  }
 }
