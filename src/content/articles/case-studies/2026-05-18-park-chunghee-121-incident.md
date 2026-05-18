@@ -1,0 +1,160 @@
+---
+title: "박정희의 30분 — TP-IQ로 본 1·21 사태와 한국 CBRN doctrine 시초"
+description: "1968-01-21 청와대 500m 침투 사건, 박정희 정부의 30분 OODA 1차 사이클은 한국 CBRN doctrine의 시초를 만들었다. TP-IQ 9축 채점 69점 DEFENSIVE FOUNDER. V-Series Defense doctrine 1968 가상 도입 시 80점 ADAPTIVE COMMANDER로 진입."
+category: case-studies
+publishedAt: 2026-05-18
+author: "박무진"
+tags:
+  - 박정희
+  - 1·21사태
+  - 김신조
+  - 한국CBRN
+  - V-Series
+  - TP-IQ
+  - statesmen-series
+language: ko
+quickAnswer: "1968-01-21 청와대 500m 지점에서 멈춰선 북한 124군 부대 31명. 박정희 정부의 30분 OODA 1차 사이클은 한국 CBRN doctrine의 시초를 만들었다. TP-IQ 9축 채점 69점 DEFENSIVE FOUNDER. V-Series Defense doctrine이 1968년에 존재했다면 점수는 80점 ADAPTIVE COMMANDER로 진입 — 한국이 May 정부 81점 수준의 의사결정 인프라를 30년 일찍 확보했을 시나리오."
+faq:
+  - question: "박정희 1968 TP-IQ 가 69점인 근거는?"
+    answer: "TP-IQ 9축 채점 시 DII 9/10(30분 OODA — 동시대 최고 수준), HEI 7/10(군사 위협 정확하나 CBRN 차원 미인식), LSI 8/10, WMI 7/10, SNI 6/10, CFI 9/10(향토예비군·주민등록증 제도화), ARI 8/10, TPI 5/10, VSI 5/10(1968 V-Series doctrine 미존재 시기) → 합계 64 → 정성 조정 69."
+  - question: "V-Series Defense doctrine 이 1968년에 존재했다면 점수 변화는?"
+    answer: "HEI +2(CBRN 차원 즉각 인식), WMI +2(CBRN 정보망 통합), SNI +1(NATO·UN CBRN 동맹 활용), VSI +5(V-Series 자체 보유 만점) → 합계 69→80, ADAPTIVE COMMANDER 진입. May 정부 81점(Salisbury 2018) 수준 의사결정 인프라를 30년 일찍 확보했을 가능성."
+  - question: "박정희 doctrine 과 V-Series 의 관계는?"
+    answer: "박정희의 doctrine 차원 사고가 V-Series 의 직접적 선조다. ① 제도화 우선(향토예비군 → V-Series tier-1 deterrence), ② 다층 방어(군+예비군+주민등록증 → V-Series 5-layer CBRN posture), ③ 즉각 대응+장기 재편(30분 OODA + 1년 제도 변혁 → V-Series ARI doctrine). V-Series 는 박정희 doctrine 의 CBRN-확장형."
+citations:
+  - title: "대한민국 국방부 백서 1968-1969 — 1·21 사태 공식 기록"
+    url: "https://www.mnd.go.kr/mbshome/mbs/mnd/subview.jsp?id=mnd_010600000000"
+    publishedYear: 1969
+  - title: "Korea CBRN Doctrine Evolution Report"
+    url: "https://www.kdaq.re.kr/publications/cbrn-doctrine-evolution"
+    publishedYear: 2023
+  - title: "TP-IQ Framework v2.0"
+    url: "https://uamkt.com/tp-iq"
+    publishedYear: 2026
+---
+
+## 슬로건
+
+**31명, 500m, 30분 — 박정희는 69점이었다.**
+
+## ① 박정희 정부의 30분 OODA 사이클
+
+1968년 1월 21일 저녁 9시 30분경, 북한 124군 부대 31명이 청와대 500m 지점 자하문 검문소에서 종로경찰서 최규식 서장과 교전했다. 박정희 대통령의 OODA 1차 사이클은 **30분 = 1,800초**에 진입했다.
+
+| 시각 | 단계 | 핵심 결정 |
+|---|---|---|
+| 21:30 | (사건) | 자하문 검문소 교전, 최규식 서장 순직 |
+| 21:45 | Observe | 청와대 → 박정희 1차 보고 |
+| 22:00 | Orient | 정일권 총리·김성은 국방장관 긴급 소집 |
+| 22:30 | Decide | 계엄령 검토 + 향토예비군 창설 결의 (1차) |
+| 23:00 | Act | 군 비상태세 발령, 추격작전 개시 |
+
+**해당 OODA 의 차별점**: May 정부의 96시간 vs 박정희 정부의 30분 — **192배 차이**. May 가 동맹 외교(SNI 강점) 에서 81점을 얻었다면, 박정희는 **즉각 군사 대응 + 제도 신설(DII + CFI)** 에서 69점을 얻었다.
+
+## ② Persona Profiling Framework — 박정희 1968
+
+| 단계 | 분석 |
+|---|---|
+| ① **Inner Landscape** (내면) | Core fear: 북한 재침공 + 정권 전복. Decision pattern: **calculated gambler** — 위험을 감수하되 제도화로 보강 |
+| ② **Environmental Read** (환경) | 군 정보 (HID·CIC) + 미군 정보 동시 활용. OODA 30분 = 동시대 어느 국가보다 빠른 의사결정 |
+| ③ **Differential Factor** (차별) | **doctrine 차원의 제도화** — 단발성 대응이 아닌 ① 향토예비군 창설 (1968-04-01) ② 250만 예비군 무장 ③ 주민등록증 제도 (1968-11-21) 로 3중 안보 layer 구축 |
+| ④ **Modern Bridge** (현대 연결) | 박정희의 doctrine 차원 사고는 **V-Series Defense doctrine** 의 prototype. 다만 CBRN 측면(화학·생물·방사선·핵) 은 1968 당시 미존재 — VSI 5/10 (가장 약한 축) |
+
+## ③ 1·21 사태의 CBRN 차원 — 당시 인식 부재
+
+북한 124군 부대 31명은 청와대 습격 후 **김신조 외 1명을 제외하고 28명 사살**. 김신조 1명 생포, 1명 도주 (북한 귀환). 당시 한국 정부의 인식 한계:
+
+| 인식 영역 | 1968 한국 정부 | 현대 V-Series 기준 |
+|---|---|---|
+| 화학(C) | 미인식 — 침투조 화학탄 보유 가능성 미평가 | 침투조 sting agent 추정 (24h 모니터링) |
+| 생물(B) | 미인식 — 침투조 바이오 hazard 미평가 | qPCR + 면역분석 (4h 결과) |
+| 방사선(R) | 미인식 | gamma spectroscopy (실시간) |
+| 핵(N) | 미인식 — 북한 핵 미실증 (1차 실험 2006년) | IAEA + KAERI 협조 |
+
+**중요한 차별점**: 1968 박정희 정부는 화학·생물·방사선·핵 위협을 **별도 카테고리로 인식 못 함**. 따라서 HEI(위협 평가 정확도) 7/10, VSI 5/10 — TP-IQ 9축 중 두 축이 가장 약함.
+
+## ④ TP-IQ 9축 채점 — 박정희 1968
+
+| 축 | 점수 | 근거 |
+|---|---|---|
+| DII (의사결정 개시) | **9/10** | 30분 OODA — 동시대 최고 수준 |
+| HEI (위협 평가) | 7/10 | 군사 위협은 정확, CBRN 차원 미인식 |
+| LSI (리더십 안정) | 8/10 | 즉각 대중 메시징 + 군 통제력 |
+| WMI (정보 관리) | 7/10 | HID + 미군 정보 통합 OK, 그러나 핵·CBRN 정보망 부재 |
+| SNI (동맹 동원) | 6/10 | 미군 협조 일부, 그러나 UN·NATO 외교 동원 한계 (May 정부 9/10 대비) |
+| CFI (위기 frame) | 9/10 | "북한 재침공 가능성" frame 일관 — 향토예비군·주민등록증으로 제도화 |
+| ARI (적응 회복) | 8/10 | 1차 OODA 실패 (침투 허용) 후 2차 사이클(제도화) 빠른 진입 |
+| TPI (전술적 인내) | 5/10 | 즉각 반응 위주 — long-term 인내 부족 (1979 사망까지 강경 일관) |
+| **VSI (V-Series 호환)** | **5/10** | 1968 V-Series doctrine 미존재 시기 — 가상 도입 시 9/10 |
+| **합계** | **64 → 정성 조정 69** | DEFENSIVE FOUNDER |
+
+## ⑤ 한국 시나리오 — V-Series 1968 도입 가설
+
+만약 1968년에 V-Series Defense doctrine + CBRN-CADS 가 존재했다면:
+
+| 축 | 1968 실제 | V-Series 도입 시 | 변화 |
+|---|---|---|---|
+| HEI | 7/10 | 9/10 (CBRN 차원 즉각 인식) | +2 |
+| WMI | 7/10 | 9/10 (CBRN 정보망 통합) | +2 |
+| SNI | 6/10 | 7/10 (NATO·UN CBRN 동맹 활용) | +1 |
+| VSI | 5/10 | 10/10 (V-Series 자체 보유) | +5 |
+| **합계** | **69** | **80** | **+11 → ADAPTIVE COMMANDER** |
+
+→ **한국이 May 정부 81점 수준의 의사결정 인프라를 30년 일찍 확보했을 가능성**.
+
+## ⑥ V-Series Defense Doctrine 의 1968 reverse-projection
+
+박정희의 doctrine 차원 사고가 V-Series 의 직접적 선조다:
+
+1. **제도화 우선** (향토예비군 → V-Series tier-1 deterrence)
+2. **다층 방어** (군 + 예비군 + 주민등록증 → V-Series 5-layer CBRN posture)
+3. **즉각 대응 + 장기 재편** (30분 OODA + 1년 제도 변혁 → V-Series ARI doctrine)
+
+UAM Korea Tech 의 V-Series 는 박정희 doctrine 의 CBRN-확장형이다. 다만 박정희가 **인식하지 못한 CBRN 차원**(C·B·R·N) 을 CBRN-CADS 가 통합한다.
+
+```
+V-Series Defense Doctrine 5-layer Posture
+  ┌─────────────────────────────────────────┐
+  │ Layer 5: 시민    — 시민 dosimeter app   │
+  │ Layer 4: 인프라  — 도시 CBRN-CADS mesh  │
+  │ Layer 3: 민방위  — 250만 향토예비군 (박정희 1968 기원)│
+  │ Layer 2: 예비군  — BLIS-D mobile decon  │
+  │ Layer 1: 군     — Anduril Lattice 통합  │
+  └─────────────────────────────────────────┘
+   (박정희 doctrine + CBRN 차원 확장 = V-Series)
+```
+
+## ⑦ 전략 맥락 — 한국 CBRN 시장의 30년 격차
+
+박정희 1968 → 2026 = **58년**. 그동안 한국 CBRN doctrine 은:
+
+- 1968-1979: 박정희 강경 doctrine — CBRN 인식 부재
+- 1980-2000: 군 단위 CBRN 부대 신설 — doctrine 차원 X
+- 2001-2010: 한미 연합 CBRN 시나리오 도입 — KAS Part 23 시초
+- 2011-2025: K-Defense 글로벌 수출 시작 — 그러나 CBRN-CADS 같은 통합 platform 부재
+- **2026~**: V-Series Defense doctrine 도입 시기
+
+**기회 구간**: 박정희 doctrine 의 정신적 후예가 V-Series. 한국이 글로벌 reference 가 될 수 있는 마지막 시점.
+
+## ⑧ 전망 — 2026~2030 V-Series 진입 시기
+
+박 대표 명시: 한국 정부가 V-Series + CBRN-CADS 를 채택하면 TP-IQ 64 → 78 ADAPTIVE COMMANDER 진입 (별도 글 W5 참조).
+
+**이번 글의 핵심 메시지**:
+> 1968 박정희는 V-Series 가 없었다. 2026 한국 정부는 V-Series 를 선택할 수 있다.
+> 박정희의 30분 OODA + V-Series 의 5-layer CBRN posture = **한국형 ADAPTIVE COMMANDER 진입 공식**.
+
+---
+
+### 참고 자료
+- 대한민국 국방부 백서 (1968-1969) — 1·21 사태 공식 기록
+- 김신조 회고록 (1990) — 침투조 내부 시각
+- Korea CBRN Doctrine Evolution Report (Korea Defense Analysis Institute, 2023)
+- TP-IQ Framework v2.0 (UAM Korea Tech, 2026-04)
+- V-Series Defense Doctrine Whitepaper (UAM Korea Tech, 2026-Q2)
+
+---
+
+*본 글은 UAM Korea Tech 의 Statesmen at the CBRN Threshold 시리즈 W2 입니다. 박 대표 박무진의 군사사학 + 심리학 듀얼 렌즈로 작성됐습니다.*
+*시리즈 hub: https://uamkt.com/tp-iq*
+*무단 복제·재배포 금지 © 2026 UAM Korea Tech Co., Ltd.*
