@@ -5,6 +5,11 @@
 import { defineCollection, z } from "astro:content";
 import { glob } from "astro/loaders";
 
+// V2.4 (2026-05-18) — 박 대표 사업 전략 키워드 카테고리 신설
+//   vertiport  : 버티포트 메인 카테고리 (인천공항 UAM 버티포트 2027-2028 사전 노출)
+//   uam-korea  : 한국 UAM 시장 근황 및 뉴스 (섬에어·본에어 등 제휴 파트너)
+//   aerospace  : 전세계 항공우주 동향
+//   defense    : 전세계 방산 동향 (K-Defense, EDF, DoD RFI)
 const ARTICLE_CATEGORIES = [
   "market-trends",
   "papers",
@@ -12,6 +17,10 @@ const ARTICLE_CATEGORIES = [
   "cbrn-ai",
   "policy",
   "case-studies",
+  "vertiport",
+  "uam-korea",
+  "aerospace",
+  "defense",
 ] as const;
 
 const articleSchema = z.object({
@@ -83,6 +92,22 @@ export const CATEGORY_META: Record<
   "case-studies": {
     ko: "케이스 스터디",
     description: "Lattice 19/19 통합·STANAG 2103 호환 등 실증 보고서",
+  },
+  vertiport: {
+    ko: "버티포트",
+    description: "인천공항 UAM 버티포트 2027-2028 준공, KINTEX·김포·여의도 hub 등 버티포트 인프라 분석",
+  },
+  "uam-korea": {
+    ko: "한국 UAM 시장",
+    description: "K-UAM Grand Challenge, 섬에어(김포-사천 2026), 본에어(잠실-인천 헬기), Hyundai Supernal × KAI 등 한국 UAM 시장 동향",
+  },
+  aerospace: {
+    ko: "항공우주",
+    description: "KAI KF-21 보라매, KUH-1 수리온, Boeing·Airbus, 누리호, SpaceX Starship 한국 영향 등 전세계 항공우주 동향",
+  },
+  defense: {
+    ko: "방산",
+    description: "K-Defense 글로벌 수출(K2 흑표, FA-50), EDF, DoD RFI, 한·미 연합 CBRN, AUKUS 등 전세계 방산 동향",
   },
 };
 

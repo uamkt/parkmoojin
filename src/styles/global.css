@@ -19,10 +19,59 @@
   body {
     color: var(--color-navy);
     background-color: #ffffff;
+    /* iOS PWA / Safari standalone: dynamic notch + home indicator 보호 */
+    min-height: 100vh;
+    min-height: 100dvh;
   }
   h1, h2, h3, h4, h5, h6 {
     font-weight: 700;
     letter-spacing: -0.01em;
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     iOS Safe Area 처리 (PWA standalone + dynamic island 대응)
+     박 대표 K-UAM 앱(PWA) 메뉴 버튼이 dynamic island 와 겹치는 문제 해결
+     ───────────────────────────────────────────────────────────── */
+
+  /* Sticky 네비게이션의 top safe-area 확보 (dynamic island 와 12pt 여유) */
+  nav.sticky,
+  header.sticky,
+  .navbar-top,
+  .top-bar {
+    padding-top: max(0.75rem, env(safe-area-inset-top));
+  }
+
+  /* Sticky nav 의 hit-test 영역 확장 (Back 버튼/햄버거 등) */
+  nav.sticky a,
+  nav.sticky button,
+  nav.sticky summary {
+    min-height: 44px; /* Apple HIG 권장 최소 hit target */
+    display: inline-flex;
+    align-items: center;
+  }
+
+  /* 하단 footer / bottom-tab-bar 의 home indicator 영역 보호 */
+  footer,
+  .bottom-nav,
+  .bottom-tab-bar {
+    padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+  }
+
+  /* Left/right safe area (landscape + foldable) */
+  main,
+  .max-w-5xl,
+  .max-w-6xl,
+  .container {
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+
+  /* PWA standalone mode 에서 status bar 영역 처리 */
+  @media (display-mode: standalone) {
+    body {
+      /* status bar 영역만큼 본문 시작점 내림 */
+      padding-top: env(safe-area-inset-top);
+    }
   }
 }
 
